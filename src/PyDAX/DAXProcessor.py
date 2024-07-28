@@ -27,7 +27,6 @@ class DAXProcessor:
         
         return comments
         
-
     def remove_comments(self) -> str:
         """Removes comments from the DAX expression
 
@@ -61,7 +60,6 @@ class DAXProcessor:
             token = self.lexer.nextToken()
         
         return columns_measures
-
 
     def extract_table_column_references(self) -> list[tuple[str]]:
         """Extracts table and column references from the DAX expression

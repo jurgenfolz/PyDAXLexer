@@ -2,6 +2,7 @@ from src.PyDAX import DAXProcessor
 
 
 if __name__ == '__main__':
+    
     dax_expression = """
         // Comment here
         EVALUATE
@@ -18,6 +19,7 @@ if __name__ == '__main__':
         of 
         comments */
         """
+    
     processor = DAXProcessor(dax_expression)
     comments = processor.extract_comments()
     print(comments)

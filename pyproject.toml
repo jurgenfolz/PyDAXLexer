@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "PyDAX"
+version = "0.1.0"
+authors = [
+  { name="Klaus Jürgen Folz", email="klausjurgenfolz@gmail.com" },
+]
+description = "PyDAX is designed to analyze DAX, it can extract comments, remove comments, and identify columns and measures referenced in DAX expressions."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dynamic = ["dependencies"]
+
+[project.urls]
+"Linkedin" = "https://www.linkedin.com/in/klausjfolz/"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+where = ["src"]
