@@ -1,6 +1,6 @@
 # PyDAX
 
-`PyDAX` is a package designed to analyze DAX (Data Analysis Expressions) expressions. It can extract comments, remove comments, and identify columns and measures referenced in DAX expressions.
+`PyDAX` is a package designed to analyze DAX expressions. It can extract comments, remove comments, and identify columns and measures referenced in DAX expressions.
 
 ## Acknowledgments
 
