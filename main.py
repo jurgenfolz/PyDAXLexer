@@ -1,4 +1,4 @@
-from src.PyDAX import DAXProcessor
+from src.PyDAX import DAXExpression
 
 
 if __name__ == '__main__':
@@ -11,7 +11,7 @@ if __name__ == '__main__':
                 Sales,
                 "PreviousMonthSales", CALCULATE (
                     [Total Sales],
-                    PREVIOUSMONTH ( 'Date'[Date] )
+                    PREVIOUSMONTH ( 'Date'[Date_col] )
                 )
             )
         )
@@ -20,7 +20,7 @@ if __name__ == '__main__':
         comments */
         """
     
-    processor = DAXProcessor(dax_expression)
+    processor = DAXExpression(dax_expression)
     comments = processor.extract_comments()
     print(comments)
     

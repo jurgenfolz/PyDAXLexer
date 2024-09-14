@@ -2,13 +2,15 @@ import sys
 from antlr4 import *
 from .lexer import PyDAXLexer
 
-class DAXProcessor:
+class DAXExpression:
     
-    def __init__(self, dax_expression):
-        self.input_stream = InputStream(dax_expression)
-        self.dax_expression = dax_expression
-        self.lexer = PyDAXLexer(self.input_stream)
+    def __init__(self, dax_expression: str):
+        self.input_stream: InputStream = InputStream(dax_expression)
+        self.dax_expression: str = dax_expression
+        self.lexer: PyDAXLexer = PyDAXLexer(self.input_stream)
         self.lexer.removeErrorListeners()
+        
+        
 
     def extract_comments(self) -> list[str]:
         """Extracts comments from the DAX expression
@@ -72,13 +74,30 @@ class DAXProcessor:
         token = self.lexer.nextToken()
         while token.type != Token.EOF:
             if token.type == PyDAXLexer.TABLE:  # Match table
-                table_name = token.text
-                token = self.lexer.nextToken()
+                table_name: str = token.text
+                token: Token = self.lexer.nextToken()
                 if token.type == PyDAXLexer.OPEN_PARENS:  # Skip '('
                     token = self.lexer.nextToken()
                 if token.type == PyDAXLexer.COLUMN_OR_MEASURE:  # Match column
-                    column_name = token.text
-                    table_column_references.append((table_name, column_name))
+                    artifact_name: str = token.text # Store column name
+                    #Clean up artifact name
+                    artifact_name = artifact_name[:-1] if artifact_name.endswith(']') else artifact_name # Remove closing bracket
+                    artifact_name = artifact_name[1:] if artifact_name.startswith('[') else artifact_name # Remove opening bracket
+                    
+                    #clean up table name
+                    table_name = table_name[:-1] if table_name.endswith("'") else table_name
+                    table_name = table_name[1:] if table_name.startswith("'") else table_name
+                    
+                    # Append table and column reference to the list
+                    table_column_references.append((table_name, artifact_name))
+                    
+            elif token.type == PyDAXLexer.COLUMN_OR_MEASURE:
+                artifact_name: str = token.text # Store column or measure name
+                artifact_name = artifact_name[:-1] if artifact_name.endswith(']') else artifact_name
+                artifact_name = artifact_name[1:] if artifact_name.startswith('[') else artifact_name
+                table_column_references.append((None, artifact_name))
+                
             token = self.lexer.nextToken()
         
         return table_column_references
+
