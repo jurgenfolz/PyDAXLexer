@@ -5,11 +5,15 @@ from .lexer import PyDAXLexer
 class DAXExpression:
     
     def __init__(self, dax_expression: str):
-        self.input_stream: InputStream = InputStream(dax_expression)
         self.dax_expression: str = dax_expression
+        
+        self.input_stream: InputStream = InputStream(dax_expression)
         self.lexer: PyDAXLexer = PyDAXLexer(self.input_stream)
         self.lexer.removeErrorListeners()
         
+        self.dax_expression_no_comments: str = self.remove_comments()
+        self.table_column_references: list[tuple[str]] = self.extract_table_column_references()
+        self.comments: list[str] = self.extract_comments()
         
 
     def extract_comments(self) -> list[str]:
@@ -46,23 +50,6 @@ class DAXExpression:
         
         return ''.join(result)
     
-    def extract_columns_measures(self) -> list[str]:
-        """Extracts columns and measures from the DAX expression
-
-        Returns:
-            list[str]: List of columns and measures in the DAX expression
-        """
-        self.lexer.reset()  # Reset the lexer to start from the beginning
-        token = self.lexer.nextToken()
-        columns_measures: list[str]= []  # Ensure columns_measures list is empty before extraction
-
-        while token.type != Token.EOF:
-            if token.type == PyDAXLexer.COLUMN_OR_MEASURE:
-                columns_measures.append(token.text)
-            token = self.lexer.nextToken()
-        
-        return columns_measures
-
     def extract_table_column_references(self) -> list[tuple[str]]:
         """Extracts table and column references from the DAX expression
 
