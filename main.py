@@ -1,36 +1,16 @@
 from src.PyDAX import DAXExpression
 
-
 if __name__ == '__main__':
     
-    dax_expression = """
-        // Comment here
-        EVALUATE
-        CALCULATETABLE (
-            ADDCOLUMNS (
-                Sales,
-                "PreviousMonthSales", CALCULATE (
-                    [Total Sales],
-                    PREVIOUSMONTH ( 'Date'[Date_col] )
-                )
-            )
-        )
-        /* Lines 
-        of 
-        comments */
+    dax_expression = """"Chance of Snow (%) in "&SELECTEDVALUE(dCities[name])
         """
     
-    processor = DAXExpression(dax_expression)
-    comments = processor.extract_comments()
-    print(comments)
+    expression = DAXExpression(dax_expression)
+    print(expression.dax_expression)
+    print(expression.dax_expression_no_comments)
+    print(expression.table_column_references)
+    print(expression.comments)
+    print(expression.clean_dax_expression)
     
-    dax_without_comments = processor.remove_comments()
-    print(dax_without_comments)
+    print(expression.contains_div)
     
-    columns_measures = processor.extract_columns_measures()
-    for column_measure in columns_measures:
-        print(column_measure)
-        
-    table_column_references = processor.extract_table_column_references()
-    for table_column_reference in table_column_references:
-        print(table_column_reference)
