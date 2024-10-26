@@ -1,7 +1,7 @@
 import pytest
 from antlr4 import InputStream
 from src.PyDAX.lexer import PyDAXLexer
-from src.PyDAX.DAXProcessor import DAXProcessor
+from PyDAX.DAXExpression import DAXExpression
 
 @pytest.fixture
 def sample_dax():
