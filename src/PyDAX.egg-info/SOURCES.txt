@@ -1,0 +1,13 @@
+LICENSE
+README.md
+pyproject.toml
+requirements.txt
+src/PyDAX/DAXProcessor.py
+src/PyDAX/__init__.py
+src/PyDAX/lexer.py
+src/PyDAX.egg-info/PKG-INFO
+src/PyDAX.egg-info/SOURCES.txt
+src/PyDAX.egg-info/dependency_links.txt
+src/PyDAX.egg-info/requires.txt
+src/PyDAX.egg-info/top_level.txt
+tests/test_dax_processor.py

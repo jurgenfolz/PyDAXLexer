@@ -3,10 +3,10 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "PyDAX"
+name = "PyDAXLexer"
 version = "0.1.0"
 authors = [
-  { name="Klaus Jürgen Folz", email="klausjurgenfolz@gmail.com" },
+  { name="Klaus Jürgen Folz", email="klausjurgenfolz@gmail.com"},
 ]
 description = "PyDAX is designed to analyze DAX, it can extract comments, remove comments, and identify columns and measures referenced in DAX expressions."
 readme = "README.md"
@@ -20,6 +20,7 @@ dynamic = ["dependencies"]
 
 [project.urls]
 "Linkedin" = "https://www.linkedin.com/in/klausjfolz/"
+"GitHub" ="https://github.com/jurgenfolz/PyDAXLexer"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
