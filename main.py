@@ -2,7 +2,33 @@ from src.PyDAX import DAXExpression
 
 if __name__ == '__main__':
     
-    dax_expression = """"Chance of Snow (%) in "&SELECTEDVALUE(dCities[name])
+    dax_expression = """
+    Total Bike Sales 1 =
+
+        VAR TotalSales =
+
+            SUMX (
+
+                'VF Cycles Sales',
+
+                'VF Cycles Sales'[Quantity_Sold] * RELATED ( 'VF Cycles Products'[Unit Price] )
+
+            )
+
+        VAR BikeSales =
+
+            CALCULATE (
+
+                TotalSales,
+
+                KEEPFILTERS ( 'VF Cycles Products'[Product Category] = "Bikes" )
+
+            )
+
+        RETURN
+
+            BikeSales
+    
         """
     
     expression = DAXExpression(dax_expression)

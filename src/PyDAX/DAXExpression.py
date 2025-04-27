@@ -1,6 +1,7 @@
 import sys
 from antlr4 import *
 from .lexer import PyDAXLexer
+from typing import Literal, Any
 
 class DAXExpression:
     
@@ -14,7 +15,9 @@ class DAXExpression:
         self.table_column_references: list[tuple[str, str]] = self.extract_artifact_references()
         self.comments: list[str] = self.extract_comments()
         self.clean_dax_expression = self.clean_expression()
-        self.contains_div = self.check_contains_div()
+        
+        
+        self.contains_div = self.check_contains_function(PyDAXLexer.DIV)
     
     def __str__(self) -> str:
         return self.dax_expression
@@ -32,12 +35,11 @@ class DAXExpression:
         state["lexer"] = PyDAXLexer(state["input_stream"])
         self.__dict__.update(state)
     
-    
-    def check_contains_div(self):
+    def check_contains_function(self, function: Any) -> bool:
         self.lexer.reset()  # Reset the lexer to start from the beginning
         token = self.lexer.nextToken() 
         while token.type != Token.EOF:
-            if token.type == PyDAXLexer.DIV:
+            if token.type == function:
                 return True
             token = self.lexer.nextToken()
         return False
