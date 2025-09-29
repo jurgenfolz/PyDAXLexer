@@ -2,6 +2,7 @@ import sys
 from antlr4 import *
 from .lexer import PyDAXLexer
 from typing import Literal, Any
+import html
 
 class DAXExpression:
     
@@ -128,9 +129,9 @@ class DAXExpression:
         
         return table_column_references
 
-    def generate_html(self, light: bool) -> str:
+    def generate_html(self, light: bool = True) -> str:
         """Generates an HTML string with colorized DAX elements in light or dark mode"""
-        
+        print("Hello jack")
         # Define colors for both modes
         dark_mode = {
             'background': '#333',
@@ -165,30 +166,32 @@ class DAXExpression:
         self.lexer.reset()
         token: Token = self.lexer.nextToken()
         while token.type != Token.EOF:
+            # Escape HTML special characters so they render correctly in HTML/QTextBrowser
+            safe_text = html.escape(token.text)
             if token.type in range(PyDAXLexer.ABS, PyDAXLexer.KEEPFILTERS) or token.type in range(PyDAXLexer.LASTDATE, PyDAXLexer.REL):
-                html_output.append(f'<span style="color: {colors["function"]};">{token.text}</span>')
+                html_output.append(f'<span style="color: {colors["function"]};">{safe_text}</span>')
             elif token.type in [PyDAXLexer.PLUS, PyDAXLexer.MINUS, PyDAXLexer.STAR, PyDAXLexer.DIV, PyDAXLexer.CARET, PyDAXLexer.OP_GE, PyDAXLexer.OP_AND, PyDAXLexer.OP_LE, PyDAXLexer.OP_NE, PyDAXLexer.OP_OR, PyDAXLexer.AND, PyDAXLexer.OR, PyDAXLexer.NOT, PyDAXLexer.COMMA]:
-                html_output.append(f'<span style="color: {colors["operator"]};">{token.text}</span>')
+                html_output.append(f'<span style="color: {colors["operator"]};">{safe_text}</span>')
             elif token.type == PyDAXLexer.TABLE:
-                html_output.append(f'<span style="color: {colors["table"]};">{token.text}</span>')
+                html_output.append(f'<span style="color: {colors["table"]};">{safe_text}</span>')
             elif token.type == PyDAXLexer.COLUMN_OR_MEASURE:
-                html_output.append(f'<span style="color: {colors["column"]};">{token.text}</span>')
+                html_output.append(f'<span style="color: {colors["column"]};">{safe_text}</span>')
             elif token.type in [PyDAXLexer.INTEGER_LITERAL, PyDAXLexer.REAL_LITERAL]:
-                html_output.append(f'<span style="color: {colors["number"]};">{token.text}</span>')
+                html_output.append(f'<span style="color: {colors["number"]};">{safe_text}</span>')
             elif token.type in [PyDAXLexer.SINGLE_LINE_COMMENT, PyDAXLexer.DELIMITED_COMMENT]:
-                html_output.append(f'<span style="color: {colors["comment"]};">{token.text}</span>')
+                html_output.append(f'<span style="color: {colors["comment"]};">{safe_text}</span>')
             elif token.type == PyDAXLexer.STRING_LITERAL:
-                html_output.append(f'<span style="color: {colors["string"]};">{token.text}</span>')
+                html_output.append(f'<span style="color: {colors["string"]};">{safe_text}</span>')
             else:
-                html_output.append(f'<span style="color: {colors["text_color"]};">{token.text}</span>')
+                html_output.append(f'<span style="color: {colors["text_color"]};">{safe_text}</span>')
             token = self.lexer.nextToken()
         
         html_output.append('</pre>')
         return ''.join(html_output)
     
-    def save_html_to_file(self, file_name: str) -> None:
+    def save_html_to_file(self, file_name: str, light: bool = True) -> None:
         """Saves the generated HTML code to a file."""
-        html_code = self.generate_html()
+        html_code = self.generate_html(light=light)
         with open(file_name, 'w', encoding='utf-8') as file:
             file.write(html_code)
         print(f"HTML saved to {file_name}")
