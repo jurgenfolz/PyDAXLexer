@@ -1,4 +1,4 @@
-lexer grammar DAXLexer;
+lexer grammar PyDAXLexer;
 
 channels { COMMENTS_CHANNEL, KEYWORD_CHANNEL }
 
@@ -406,12 +406,34 @@ ALPHABETICAL:                            'ALPHABETICAL'                         
 KEEP:									 'KEEP'									   -> channel(KEYWORD_CHANNEL);
 REL:									 'REL'									   -> channel(KEYWORD_CHANNEL);
 
-DATE_LITERAL:          'DT"' (~'"' | '""')* '"' {Text = Text.Substring(3, Text.Length - 4);};
-INTEGER_LITERAL:       [0-9]+;
-REAL_LITERAL:          [0-9]* '.' [0-9]+;
-STRING_LITERAL:        '"' (~'"' | '""')* '"' {Text = Text.Substring(1, Text.Length - 2);};
-TABLE:                 '\'' (~["\'\r\n\u0085\u2028\u2029] | '\'\'')* '\'' {Text = Text.Substring(1, Text.Length - 2).Replace("''","'");};
-COLUMN_OR_MEASURE:     '[' (~["\]\r\n\u0085\u2028\u2029] | ']]')* ']'   {Text = Text.Substring(1, Text.Length - 2).Replace("]]","]");};
+DATE_LITERAL
+    : 'DT"' (~'"' | '""')* '"'
+      { self.text = self.text[3:-1] }          // drop  DT"  …  "
+    ;
+
+INTEGER_LITERAL
+    : [0-9]+
+    ;
+
+REAL_LITERAL
+    : [0-9]* '.' [0-9]+
+    ;
+
+STRING_LITERAL
+    : '"' (~'"' | '""')* '"'
+      { self.text = self.text[1:-1] }          // drop leading/ending quotes
+    ;
+
+TABLE
+    : '\'' (~["\\'\r\n\u0085\u2028\u2029] | '\'\'')* '\''
+      { self.text = self.text[1:-1].replace("''", "'") }
+    ;
+
+COLUMN_OR_MEASURE
+    : '[' (~["\]\r\n\u0085\u2028\u2029] | ']]')* ']'
+      { self.text = self.text[1:-1].replace("]]", "]") }
+    ;
+
 TABLE_OR_VARIABLE:     IdentifierOrKeyword;
 
 OPEN_CURLY:			   '{';

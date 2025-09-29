@@ -1,6 +1,6 @@
 import sys
 from antlr4 import *
-from .lexer import PyDAXLexer
+from .PyDAXLexer import PyDAXLexer
 from typing import Literal, Any
 import html
 
