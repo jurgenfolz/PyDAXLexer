@@ -131,7 +131,6 @@ class DAXExpression:
 
     def generate_html(self, light: bool = True) -> str:
         """Generates an HTML string with colorized DAX elements in light or dark mode"""
-        print("Hello jack")
         # Define colors for both modes
         dark_mode = {
             'background': '#333',
