@@ -45,6 +45,14 @@ class DAXExpression:
             token = self.lexer.nextToken()
         return False
     
+    def print_tokens(self) -> None:
+        """Prints all tokens in the DAX expression for debugging purposes"""
+        self.lexer.reset()  # Reset the lexer to start from the beginning
+        token: Token = self.lexer.nextToken()
+        while token.type != Token.EOF:
+            print(f"Token Type: {self.lexer.symbolicNames[token.type]}, Text: '{token.text}', Channel: {token.channel}")
+            token = self.lexer.nextToken()
+    
     def clean_expression(self) -> str:
         """Cleans the DAX expression by removing whitespaces, tabs, newlines, and carriage returns
 
@@ -194,4 +202,5 @@ class DAXExpression:
         with open(file_name, 'w', encoding='utf-8') as file:
             file.write(html_code)
         print(f"HTML saved to {file_name}")
+    
     
