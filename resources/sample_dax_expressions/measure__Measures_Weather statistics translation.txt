@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Wetterstatistik",
+    "English","Weather Statistics",
+    "Français","Statistiques météorologiques",
+    "Italiano","Statistiche meteorologiche")

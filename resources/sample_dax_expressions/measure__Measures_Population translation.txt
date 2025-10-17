@@ -1,0 +1,5 @@
+SWITCH([Selected Language],
+    "Deutsch","Bevölkerung",
+    "English","Population",
+    "Français","Population",
+    "Italiano","Popolazione")

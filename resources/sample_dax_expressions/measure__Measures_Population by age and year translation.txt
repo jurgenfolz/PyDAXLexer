@@ -1,0 +1,6 @@
+
+SWITCH([Selected Language],
+    "Deutsch","Bevölkerung nach Altersgruppen und Jahr",
+    "English","Population by age groups and year",
+    "Français","Population par tranches d'âge et année",
+    "Italiano","Popolazione per fasce di età e anno")

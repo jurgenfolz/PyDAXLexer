@@ -1,0 +1,38 @@
+
+VAR original_metric = "Rain probability"
+//Datetime control:
+VAR selected_date = SELECTEDVALUE(factWeather[Datetime])
+VAR max_date_all=CALCULATE(MAX(factWeather[Datetime]),ALL(factWeather))
+VAR min_date_all= CALCULATE(MIN(factWeather[Datetime]),ALL(factWeather))
+VAR max_date=MAX(factWeather[Datetime])
+VAR min_date= MIN(factWeather[Datetime])
+VAR actual_datetime = CALCULATE(MIN(factWeather[Datetime]),ALL(factWeather),factWeather[Forecast]="Aktuell")
+
+var _datetime = 
+    IF(
+        NOT ISBLANK(selected_date),
+        selected_date,
+        IF(
+            max_date=max_date_all
+             &&min_date=min_date_all,
+            actual_datetime,min_date&" - "&max_date))
+
+
+VAR lan = [Selected Language]
+VAR average_ = 
+SWITCH(lan,
+    "Deutsch"," - (Durchschnitt)",
+    "English"," - (average)",
+    "Français"," - (moyenne)",
+    "Italiano"," - (media)")
+
+VAR _avg = IF(OR(_datetime=actual_datetime,_datetime=selected_date),BLANK(),average_)
+VAR tr_metric= 
+    CALCULATE(
+        FIRSTNONBLANK(trMetrics[Metric],TRUE()),
+        ALL(trMetrics),
+        trMetrics[Original]=original_metric,
+        trMetrics[Language]=lan
+        )
+  
+RETURN tr_metric&" (%)"&_avg

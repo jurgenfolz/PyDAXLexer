@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Metrik",
+    "English","Metric",
+    "Français","Métrique",
+    "Italiano","Metrica")

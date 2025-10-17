@@ -1,0 +1,1 @@
+IF([Year Value]<=1950,1950,BLANK()) 

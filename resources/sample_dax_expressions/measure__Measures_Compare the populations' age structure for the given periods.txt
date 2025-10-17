@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Vergleichen Sie die Bevölkerungsstruktur für eine Periode",
+    "English","Compare the populations' age structure for the given periods",
+    "Français","Comparer la structure par âge des populations pour les périodes données",
+    "Italiano","Confronta la struttura per età delle popolazioni per i periodi indicati")

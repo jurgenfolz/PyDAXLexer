@@ -1,0 +1,1 @@
+CALCULATE(MIN(factWeather[wind_kph]),ALLSELECTED(factWeather))

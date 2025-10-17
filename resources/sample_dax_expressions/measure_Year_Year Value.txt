@@ -1,0 +1,1 @@
+SELECTEDVALUE('Year'[Year], 1700)

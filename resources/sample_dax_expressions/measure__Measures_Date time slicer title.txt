@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Datum und Zeit",
+    "English","Date and time",
+    "Français","Date et l'heure",
+    "Italiano","Data e ora")

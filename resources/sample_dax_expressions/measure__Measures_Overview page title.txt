@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Power BI Bericht für die Schweiz",
+    "English","Switzerland Report",
+    "Français","Rapport Power BI pour la Suisse",
+    "Italiano","Report Power BI per la Svizzera")

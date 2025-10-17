@@ -1,0 +1,1 @@
+CALCULATE(MAX(factWeather[temp_c]),FILTER(factWeather,[Average wind speed (km/h)]>5))

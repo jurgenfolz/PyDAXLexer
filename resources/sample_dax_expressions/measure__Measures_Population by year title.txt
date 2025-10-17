@@ -1,0 +1,6 @@
+
+SWITCH([Selected Language],
+    "Deutsch","Bevölkerung der Schweiz nach Jahr",
+    "English","Switzerland's population by year",
+    "Français","Population de la Suisse par année",
+    "Italiano","Popolazione svizzera per anno")

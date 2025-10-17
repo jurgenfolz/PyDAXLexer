@@ -1,0 +1,5 @@
+
+    CALCULATE(
+        FIRSTNONBLANK(dimCompassDir[Arrow64],TRUE()),
+        factWeather[Datetime]=MIN(factWeather[Datetime])
+    )

@@ -1,0 +1,6 @@
+//Exports and imports by country (Trillions of USD)
+SWITCH([Selected Language],
+    "Deutsch","Exporte und Importe nach Ländern (Billionen CHF)",
+    "English","Exports and imports by country (Trillions of CHF)",
+    "Français","Exportations et importations par pays (Trillions de CHF)",
+    "Italiano","Esportazioni e importazioni per paese (trilioni di CHF)")

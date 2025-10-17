@@ -1,0 +1,10 @@
+
+SWITCH(
+    [Selected metric],
+    "Temperature", [Average Temperature (℃)],
+    "Condition",[Average Temperature (℃)],
+    "Pressure",[Average Pressure (mB)],
+    "Humidity",-[Relative humidity (%)],
+    "Wind direction",[Average wind speed (km/h)],
+    "Wind speed",[Average wind speed (km/h)],
+    "Rain probability",-[Rain probability (%)])

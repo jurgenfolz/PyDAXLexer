@@ -1,0 +1,1 @@
+DISTINCT(SELECTCOLUMNS(factWeather,"Datetime slicer",[Datetime slicer],"DT AUX",[Datetime slicer]))

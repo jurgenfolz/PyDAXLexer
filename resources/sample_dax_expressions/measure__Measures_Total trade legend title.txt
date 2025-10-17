@@ -1,0 +1,6 @@
+
+SWITCH([Selected Language],
+    "Deutsch","Legende: Gesamthandel (Importe + Exporte)",
+    "English","Legend: total trade (imports + exports)",
+    "Français","Légende: Commerce total (importations + exportations)",
+    "Italiano","Leggenda: Totale scambi (importazioni + esportazioni)")

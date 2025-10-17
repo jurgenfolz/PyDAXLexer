@@ -1,0 +1,1 @@
+(str: string) => str&" - Gato Obelix owns this now"

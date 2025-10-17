@@ -1,0 +1,21 @@
+
+VAR tr_metric = SELECTEDVALUE(trMetrics_size[Metric])
+VAR diameter =
+    SWITCH([Selected Language],
+    "Deutsch","Grösse der Punkte",
+    "English","Bubble size",
+    "Français","Taille des pointes",
+    "Italiano","Dimensione dei punti")&" "&UNICHAR(8960)&": "
+
+VAR addition = 
+    SWITCH(
+        [Size axis metric],
+        "Temperature", " (℃)",
+        "Condition", " (℃)",
+        "Pressure"," (mB)",
+        "Humidity"," (%)",
+        "Wind direction"," (km/h)",
+        "Wind speed"," (km/h)",
+        "Rain probability"," (%)")
+
+RETURN if([Size axis metric]="Default",BLANK(),diameter&tr_metric&addition)

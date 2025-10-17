@@ -1,0 +1,1 @@
+AVERAGE(factWeather[temp_c])

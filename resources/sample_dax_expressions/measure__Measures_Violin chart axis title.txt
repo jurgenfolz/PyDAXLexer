@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Stunde des Tages",
+    "English","Hour of the day",
+    "Français","Heure du jour",
+    "Italiano","Ora del giorno")

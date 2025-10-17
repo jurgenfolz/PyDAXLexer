@@ -1,0 +1,6 @@
+
+SWITCH([Selected Language],
+    "Deutsch","Bevölkerung nach Altersgruppen",
+    "English","Population by age groups",
+    "Français","Population par tranches d'âge",
+    "Italiano","Popolazione per fasce di età")&" ("&SELECTEDVALUE(Decades[Decade])&")"

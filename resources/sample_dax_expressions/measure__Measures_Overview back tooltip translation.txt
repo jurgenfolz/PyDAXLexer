@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Klicken Sie hier, um zur Overview Seite zurückzukehren",
+    "English","Click here to go back to the overview page",
+    "Français","Cliquez ici pour revenir à la page overview",
+    "Italiano","Clicca qui per tornare alla pagina overview")

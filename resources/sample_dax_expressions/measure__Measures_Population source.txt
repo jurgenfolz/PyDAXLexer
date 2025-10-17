@@ -1,0 +1,6 @@
+
+SWITCH([Selected Language],
+    "Deutsch","Quelle: ",
+    "English","Source: ",
+    "Français","Source: ",
+    "Italiano","Fonte: ")&"Gapminder (v6), HYDE (v3.2), UN (2019)"

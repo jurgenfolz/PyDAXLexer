@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Filter zurücksetzen",
+    "English","Reset filters",
+    "Français","Réinitialiser les filtres",
+    "Italiano","Ripristina i filtri")

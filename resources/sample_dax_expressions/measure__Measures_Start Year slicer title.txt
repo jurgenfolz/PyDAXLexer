@@ -1,0 +1,6 @@
+
+SWITCH([Selected Language],
+    "Deutsch","Startjahr (100 - 2100)",
+    "English","Start year (100 - 2100)",
+    "Français","Année de départ (100 - 2100)",
+    "Italiano","Anno di inizio (100 - 2100)")

@@ -1,0 +1,11 @@
+
+VAR  wind_normalized = 
+    DIVIDE(
+        ([Average wind speed (km/h)]-[Min wind speed]),
+        ([Max wind speed]-[Min wind speed]))*20+7 
+RETURN
+
+SWITCH([Selected metric],
+    "Condition",45,
+    "Wind direction",15,
+    "Wind speed",wind_normalized)

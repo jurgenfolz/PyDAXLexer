@@ -1,0 +1,1 @@
+SELECTEDVALUE('trMetrics_Y'[Original])

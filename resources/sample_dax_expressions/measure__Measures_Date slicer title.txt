@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Datum",
+    "English","Date",
+    "Français","Date",
+    "Italiano","Data")

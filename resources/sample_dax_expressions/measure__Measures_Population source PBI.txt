@@ -1,0 +1,6 @@
+
+SWITCH([Selected Language],
+    "Deutsch","Quelle: ",
+    "English","Source: ",
+    "Français","Source: ",
+    "Italiano","Fonte: ")&"Power BI"

@@ -1,0 +1,1 @@
+IF(factWeather[Forecast]="Forecast",CONVERT(factWeather[Datetime],STRING),"Now")

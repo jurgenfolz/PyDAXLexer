@@ -1,0 +1,1 @@
+(Temperature_c : numeric) =>  Temperature_c*9/5 + 32

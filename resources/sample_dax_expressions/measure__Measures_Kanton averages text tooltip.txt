@@ -1,0 +1,11 @@
+
+VAR _text =  
+    SWITCH([Selected Language],
+    "Deutsch","Die angegebenen Werte sind Durchschnittswerte für den Kanton",
+    "English","The values shown are averages for the Canton",
+    "Français","Les valeurs indiquées sont des moyennes pour le canton",
+    "Italiano","I valori indicati sono medie per il Cantone") RETURN
+
+VAR city = SELECTEDVALUE(trCities[City])
+RETURN
+IF(ISBLANK(city),_text,BLANK())

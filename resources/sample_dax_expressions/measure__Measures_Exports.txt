@@ -1,0 +1,1 @@
+CALCULATE(SUM(factTrades[Value (thousands USD)]),factTrades[Export]="Export")

@@ -1,0 +1,1 @@
+CALCULATE(MAX(factWeather[wind_kph]),ALLSELECTED(factWeather))

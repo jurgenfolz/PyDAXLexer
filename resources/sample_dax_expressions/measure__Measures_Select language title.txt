@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Wählen deine Sprache ",
+    "English","Choose your language ",
+    "Français","Choisissez votre langue ",
+    "Italiano","Scegli la tua lingua ")

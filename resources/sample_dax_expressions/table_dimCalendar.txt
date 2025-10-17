@@ -1,0 +1,1 @@
+ADDCOLUMNS(CALENDAR(MIN(facttrades[Date]),MAX(factWeather[Date])),"Year",YEAR([Date]))

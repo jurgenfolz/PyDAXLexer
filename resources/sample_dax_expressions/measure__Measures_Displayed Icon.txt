@@ -1,0 +1,5 @@
+
+    SWITCH([Selected metric],
+    "Condition",[Weather Icon],
+    "Wind direction",[Wind direction Icon],
+    "Wind speed",[Wind direction Icon])

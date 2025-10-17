@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Wetter in der Schweiz",
+    "English","Weather in Switzerland",
+    "Français","Météo en Suisse",
+    "Italiano","Meteo in Svizzera")

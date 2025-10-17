@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Metrik für den Durchmesser des Kreises",
+    "English","Metric for the diameter of the circle",
+    "Français","Métrique pour le diamètre du cercle",
+    "Italiano","Metrico per il diametro del cerchio")

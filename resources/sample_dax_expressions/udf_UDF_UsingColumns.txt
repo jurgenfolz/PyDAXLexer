@@ -1,0 +1,1 @@
+() => max(factWeather[temp_c]) + max(factWeather[chance_of_snow])

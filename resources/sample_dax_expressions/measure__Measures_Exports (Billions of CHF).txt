@@ -1,0 +1,1 @@
+ROUNDUP([Exports]/10^9,0)

@@ -1,0 +1,15 @@
+
+VAR _key = "ba65bf7ce74616797f7b2055aea2596e"
+VAR _type  = 
+    SWITCH(
+        [Selected metric],
+        "Temperature", "temp_new",
+        "Condition", "temp_new",
+        "Pressure","pressure_new",
+        "Humidity","clouds_new",
+        "Wind direction","wind_new",
+        "Wind speed","wind_new",
+        "Rain probability","precipitation_new")
+RETURN
+    "https://tile.openweathermap.org/map/"&_type&"/{z}/{x}/{y}.png?appid="&_key
+    

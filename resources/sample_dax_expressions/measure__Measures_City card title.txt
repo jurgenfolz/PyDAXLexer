@@ -1,0 +1,6 @@
+
+SWITCH([Selected Language],
+    "Deutsch","Stadt",
+    "English","City",
+    "Français","Ville",
+    "Italiano","Città")

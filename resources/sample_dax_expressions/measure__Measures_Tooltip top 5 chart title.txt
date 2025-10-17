@@ -1,0 +1,8 @@
+
+[Average temp title 2]&
+SWITCH([Selected Language],
+    "Deutsch"," nach Stadt (Top 5)",
+    "English"," by city (Top 5)",
+    "Français"," par ville (Top 5)",
+    "Italiano"," per città (Top 5)")
+

@@ -1,0 +1,6 @@
+
+SWITCH([Selected Language],
+    "Deutsch","Handelspartner",
+    "English","Trade partners",
+    "Français","Partenaires commerciaux",
+    "Italiano","Partner commerciali")

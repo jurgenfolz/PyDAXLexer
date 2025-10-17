@@ -1,0 +1,1 @@
+CALCULATE(MIN(factWeather[Datetime]),factWeather[Forecast]="Aktuell")

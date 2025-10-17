@@ -1,0 +1,9 @@
+{
+    ("Average Pressure (mB)", NAMEOF('_Measures'[Average Pressure (mB)]), 0),
+    ("Average Temperature (℃)", NAMEOF('_Measures'[Average Temperature (℃)]), 1),
+    ("Measure displayed charts", NAMEOF('_Measures'[Measure displayed charts]), 2),
+    ("Measure displayed conditional colors", NAMEOF('_Measures'[Measure displayed conditional colors]), 3),
+    ("Average wind speed (km/h)", NAMEOF('_Measures'[Average wind speed (km/h)]), 4),
+    ("Relative humidity (%)", NAMEOF('_Measures'[Relative humidity (%)]), 5),
+    ("Rain probability (%)", NAMEOF('_Measures'[Rain probability (%)]), return_number_six())
+}

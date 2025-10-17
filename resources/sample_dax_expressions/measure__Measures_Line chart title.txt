@@ -1,0 +1,30 @@
+
+VAR metric = [Selected metric]
+VAR first_tr_metric= [Selected translated metric] return
+VAR lan = [Selected Language]
+VAR wind_direction = CALCULATE(FIRSTNONBLANK(trMetrics[Metric],TRUE()),trMetrics[Language]=lan,trMetrics[Original]="Wind speed",ALL(trMetrics))
+VAR _condition = CALCULATE(FIRSTNONBLANK(trMetrics[Metric],TRUE()),trMetrics[Language]=lan,trMetrics[Original]="Temperature",ALL(trMetrics))
+
+VAR tr_metric = 
+    SWITCH(metric,
+    "Wind direction",wind_direction,
+    "Condition",_condition,
+    first_tr_metric)
+
+VAR addition = 
+    SWITCH(
+        [Selected metric],
+        "Temperature", " (℃)",
+        "Condition", " (℃)",
+        "Pressure"," (mB)",
+        "Humidity"," (%)",
+        "Wind direction"," (km/h)",
+        "Wind speed"," (km/h)",
+        "Rain probability"," (%)")
+VAR result = 
+    SWITCH([Selected Language],
+    "Deutsch",tr_metric&addition&" im Zeitverlauf",
+    "English",tr_metric&addition&" overtime",
+    "Français",tr_metric&addition&" par date et heure",
+    "Italiano",tr_metric&addition&" per data e ora")
+RETURN result

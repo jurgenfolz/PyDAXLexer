@@ -1,0 +1,6 @@
+
+SWITCH([Selected Language],
+    "Deutsch","Land",
+    "English","Country",
+    "Français","Pays",
+    "Italiano","Paese")

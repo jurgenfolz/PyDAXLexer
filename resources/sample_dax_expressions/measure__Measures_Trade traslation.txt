@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Handel",
+    "English","Trade",
+    "Français","Commerce",
+    "Italiano","Commercio")

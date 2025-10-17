@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Durchschnittliche Windgeschwindigkeit nach Richtung (km/h)",
+    "English","Average wind speed by direction (km/h)",
+    "Français","Vitesse moyenne du vent par direction (km/h)",
+    "Italiano","Velocità media del vento per direzione (km/h)")

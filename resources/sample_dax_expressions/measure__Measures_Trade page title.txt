@@ -1,0 +1,6 @@
+//Switzerland exports, imports and trade partners
+SWITCH([Selected Language],
+    "Deutsch","Schweiz Exporte, Importe und Handelspartner",
+    "English","Switzerland exports, imports and trade partners",
+    "Français","Exportations, importations et partenaires commerciaux de la Suisse",
+    "Italiano","Esportazioni, importazioni e partner commerciali della Svizzera")

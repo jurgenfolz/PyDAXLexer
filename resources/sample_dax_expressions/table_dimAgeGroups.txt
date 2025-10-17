@@ -1,0 +1,13 @@
+
+    ADDCOLUMNS(
+        DISTINCT(factAgeGroups[Age Group]),
+        "Age_ID",
+        SWITCH(
+            [Age Group],
+            "0-5",1,
+            "5-14",2,
+            "15-24",3,
+            "25-64",4,
+            "65+",5
+            )
+        )

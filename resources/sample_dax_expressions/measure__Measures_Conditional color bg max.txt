@@ -1,0 +1,10 @@
+
+    SWITCH(
+        [Selected metric],
+        "Temperature", "#f6b53d",
+        "Condition", "#f6b53d",
+        "Pressure","#f6b53d",
+        "Humidity","#9fb6d1",
+        "Wind direction","#f6b53d",
+        "Wind speed","#f6b53d",
+        "Rain probability","#9fb6d1")

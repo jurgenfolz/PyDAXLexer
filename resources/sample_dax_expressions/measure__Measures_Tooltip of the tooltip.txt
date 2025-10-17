@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Bewegen Sie die Maus darüber, um eine Tooltip-Seite anzuzeigen",
+    "English","Hover over with the mouse to display a tooltip page",
+    "Français","Survolez avec la souris pour afficher une page d'info-bulle",
+    "Italiano","Passa il mouse sopra con il mouse per visualizzare una pagina di descrizione comando")

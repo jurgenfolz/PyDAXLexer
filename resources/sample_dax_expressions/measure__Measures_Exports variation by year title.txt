@@ -1,0 +1,6 @@
+//Exports variation by year (Trillions of USD)
+SWITCH([Selected Language],
+    "Deutsch","Exporte im Jahresvergleich (CHF)",
+    "English","Exports year over year comparison (CHF)",
+    "Français","Comparaison des exportations d'une année sur l'autre (CHF)",
+    "Italiano","Confronto anno su anno delle esportazioni (CHF)")

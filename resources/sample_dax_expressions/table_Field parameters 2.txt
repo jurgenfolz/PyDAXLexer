@@ -1,0 +1,6 @@
+{
+    ("Relative humidity (%)", NAMEOF('_Measures'[Relative humidity (%)]), 0),
+    ("Rain probability (%)", NAMEOF('_Measures'[Rain probability (%)]), 1),
+    ("Measure displayed charts", NAMEOF('_Measures'[Measure displayed charts]), 2),
+    ("Average wind speed (km/h)", NAMEOF('_Measures'[Average wind speed (km/h)]), 3)
+}

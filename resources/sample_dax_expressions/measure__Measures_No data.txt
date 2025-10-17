@@ -1,0 +1,10 @@
+
+VAR _txt = 
+SWITCH([Selected Language],
+    "Deutsch","Keine Daten",
+    "English","No data",
+    "Français","Pas de données",
+    "Italiano","Nessun dato") 
+RETURN
+
+IF(ISBLANK([Population by Age Group])||[Population by Age Group]=0,_txt,"")

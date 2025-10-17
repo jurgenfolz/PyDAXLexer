@@ -1,0 +1,4 @@
+
+    CALCULATE(
+        SUM(factPopulation[Population (historical estimates and future projections)]),
+        FILTER(factPopulation,factPopulation[Year]>'Year'[Year Value]))

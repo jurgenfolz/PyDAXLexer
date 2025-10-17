@@ -1,0 +1,6 @@
+
+VAR kanton_ab = SELECTEDVALUE(dimKantone[Abkürzung])
+VAR kanton= SELECTEDVALUE(dimKantone[Kanton])
+VAR city = SELECTEDVALUE(trCities[City])
+RETURN
+IF( ISBLANK(city),kanton,city&" ("&kanton_ab&")")

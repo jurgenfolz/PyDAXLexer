@@ -1,0 +1,1 @@
+IF([Kanton averages text tooltip]=BLANK(),1,0)

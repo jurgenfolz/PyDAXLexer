@@ -1,0 +1,6 @@
+
+SWITCH([Selected Language],
+    "Deutsch","Jahr",
+    "English","Year",
+    "Français","An",
+    "Italiano","Anno")

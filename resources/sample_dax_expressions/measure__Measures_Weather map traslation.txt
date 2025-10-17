@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Wetterkarte",
+    "English","Weather Map",
+    "Français","Carte météorologique",
+    "Italiano","Mappa del tempo")

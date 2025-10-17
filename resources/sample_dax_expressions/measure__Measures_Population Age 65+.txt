@@ -1,0 +1,7 @@
+
+VAR pop= 
+    CALCULATE(
+        SUM(factAgeGroups[Population]),
+        dimAgeGroups[Age Group]="65+")
+RETURN
+IF(ISBLANK(pop),"No Data",pop/SUM(factAgeGroups[Population]))

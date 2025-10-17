@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Seiten",
+    "English","Pages",
+    "Français","Pages",
+    "Italiano","Pagine")

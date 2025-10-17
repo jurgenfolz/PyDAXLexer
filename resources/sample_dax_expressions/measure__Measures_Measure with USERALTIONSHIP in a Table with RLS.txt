@@ -1,0 +1,1 @@
+CALCULATE(COUNTROWS(trCountries),USERELATIONSHIP(dimCountries[country_code],trCountries[Country]))

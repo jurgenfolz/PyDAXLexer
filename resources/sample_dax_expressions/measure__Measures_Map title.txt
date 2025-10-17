@@ -1,0 +1,37 @@
+
+//Datetime control:
+VAR selected_date = SELECTEDVALUE(factWeather[Datetime])
+VAR max_date_all=CALCULATE(MAX(factWeather[Datetime]),ALL(factWeather))
+VAR min_date_all= CALCULATE(MIN(factWeather[Datetime]),ALL(factWeather))
+VAR max_date=MAX(factWeather[Datetime])
+VAR min_date= MIN(factWeather[Datetime])
+VAR actual_datetime = [Last update dt]
+
+var _datetime = 
+    IF(
+        NOT ISBLANK(selected_date),
+        selected_date,
+        IF(
+            max_date=max_date_all
+             &&min_date=min_date_all,
+            actual_datetime,
+            min_date))
+
+VAR tr_metric= [Selected translated metric] return
+VAR addition = 
+    SWITCH(
+        [Selected metric],
+        "Temperature", " (℃)",
+        "Condition", "",
+        "Preassure"," (mB)",
+        "Humidity"," (%)",
+        "Wind direction"," (km/h)",
+        "Wind speed"," (km/h)",
+        "Rain probability"," (%)")
+VAR result = 
+    SWITCH([Selected Language],
+    "Deutsch",tr_metric&addition&" nach Stadt",
+    "English",tr_metric&addition&" by City",
+    "Français",tr_metric&addition&" par ville",
+    "Italiano",tr_metric&addition&" per città")
+RETURN result&" ("&_datetime&")"

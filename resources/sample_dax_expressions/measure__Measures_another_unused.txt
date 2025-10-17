@@ -1,0 +1,1 @@
+SUM(factWeather[parent_column_used_by_unused])

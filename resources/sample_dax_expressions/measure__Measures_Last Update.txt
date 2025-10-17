@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Letztes Update: "&[Last update dt],
+    "English","Last update: "&[Last update dt],
+    "Français","Dernière mise à jour: "&[Last update dt],
+    "Italiano","Ultimo aggiornamento: "&[Last update dt])

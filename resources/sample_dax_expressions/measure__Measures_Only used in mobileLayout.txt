@@ -1,0 +1,4 @@
+
+
+VAR temperature = [Actual Temperature (℃)] + rand()
+RETURN "#EE00EE"

@@ -1,0 +1,4 @@
+
+CALCULATE(
+    SUM(factPopulation[Population (historical estimates and future projections)]),
+    factPopulation[Date].[Year] = 2021)

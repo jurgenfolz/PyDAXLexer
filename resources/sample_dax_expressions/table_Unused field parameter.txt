@@ -1,0 +1,6 @@
+{
+    ("another_unused", NAMEOF('_Measures'[another_unused]), 0),
+    ("Bevölkerung", NAMEOF('_Measures'[Bevölkerung]), 1),
+    ("child_used_by_unused", NAMEOF('_Measures'[child_used_by_unused]), 2),
+    ("child_used_by_unused_2", NAMEOF('_Measures'[child_used_by_unused_2]), 3)
+}

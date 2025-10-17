@@ -1,0 +1,3 @@
+
+VAR _value = [randomMeasure]
+RETURN IF(_value>0,"TriangleHigh","TriangleLow")

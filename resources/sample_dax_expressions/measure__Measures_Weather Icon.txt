@@ -1,0 +1,18 @@
+
+
+VAR _date = SELECTEDVALUE(factWeather[Date]) 
+
+VAR actual_icon=
+  CALCULATE(
+        FIRSTNONBLANK(factWeather[condition.icon],TRUE()),
+        factWeather[Forecast]="Aktuell"
+    )
+
+VAR _icon=
+  CALCULATE(
+        FIRSTNONBLANK(factWeather[condition.icon],TRUE()),
+        factWeather[Datetime]=MIN(factWeather[Datetime])
+    )
+RETURN
+
+IF(ISBLANK(_date),actual_icon,_icon)

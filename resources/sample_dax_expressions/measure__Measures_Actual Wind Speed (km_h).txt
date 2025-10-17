@@ -1,0 +1,1 @@
+0+ CALCULATE(AVERAGE(factWeather[wind_kph]), factWeather[Forecast]="Aktuell",NOT ISBLANK(dimCompassDir[Arrow64]))

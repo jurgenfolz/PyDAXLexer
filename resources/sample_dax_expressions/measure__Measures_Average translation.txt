@@ -1,0 +1,6 @@
+
+SWITCH([Selected Language],
+    "Deutsch","Durchschnitt",
+    "English","Average",
+    "Français","Moyen(ne)",
+    "Italiano","Media")

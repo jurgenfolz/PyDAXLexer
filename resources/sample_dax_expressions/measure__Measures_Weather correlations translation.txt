@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Korrelationen",
+    "English","Weather Correlations",
+    "Français","Corrélations météorologiques",
+    "Italiano","Correlazioni meteorologiche")

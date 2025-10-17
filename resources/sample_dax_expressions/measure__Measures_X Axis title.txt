@@ -1,0 +1,16 @@
+
+
+VAR tr_metric = SELECTEDVALUE(trMetrics_X[Metric])
+
+VAR addition = 
+    SWITCH(
+        [X axis metric],
+        "Temperature", " (℃)",
+        "Condition", " (℃)",
+        "Pressure"," (mB)",
+        "Humidity"," (%)",
+        "Wind direction"," (km/h)",
+        "Wind speed"," (km/h)",
+        "Rain probability"," (%)")
+
+RETURN tr_metric&addition

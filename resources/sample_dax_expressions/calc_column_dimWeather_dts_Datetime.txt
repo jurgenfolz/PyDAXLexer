@@ -1,0 +1,1 @@
+CALCULATE(MIN(factWeather[Datetime]),FILTER(factWeather,factWeather[Datetime slicer]=dimWeather_dts[DT AUX]))

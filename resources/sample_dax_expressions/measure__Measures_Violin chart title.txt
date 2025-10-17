@@ -1,0 +1,36 @@
+
+//Datetime control:
+VAR max_date_all=CALCULATE(MAX(factWeather[Datetime]),ALL(factWeather))
+VAR min_date_all= CALCULATE(MIN(factWeather[Datetime]),ALL(factWeather))
+VAR max_date=MAX(factWeather[Datetime])
+VAR min_date= MIN(factWeather[Datetime])
+var _datetime = CONVERT(min_date_all,DATETIME)&" 00:00:00 AM - "&max_date
+var lan = [Selected Language]
+VAR first_tr_metric= [Selected translated metric] return
+VAR wind_direction = CALCULATE(FIRSTNONBLANK(trMetrics[Metric],TRUE()),trMetrics[Language]=lan,trMetrics[Original]="Wind speed",ALL(trMetrics))
+VAR _condition = CALCULATE(FIRSTNONBLANK(trMetrics[Metric],TRUE()),trMetrics[Language]=lan,trMetrics[Original]="Temperature",ALL(trMetrics))
+
+VAR tr_metric = 
+    SWITCH([Selected metric],
+    "Wind direction",wind_direction,
+    "Condition",_condition,
+    first_tr_metric)
+
+
+VAR addition = 
+    SWITCH(
+        [Selected metric],
+        "Temperature", " (℃)",
+        "Condition", "",
+        "Preassure"," (mB)",
+        "Humidity"," (%)",
+        "Wind direction"," (km/h)",
+        "Wind speed"," (km/h)",
+        "Rain probability"," (%)")
+VAR result = 
+    SWITCH([Selected Language],
+    "Deutsch",tr_metric&addition&" nach Stunde",
+    "English",tr_metric&addition&" by hour",
+    "Français",tr_metric&addition&" par heure",
+    "Italiano",tr_metric&addition&" per ora")
+RETURN result&" ("&_datetime&")"

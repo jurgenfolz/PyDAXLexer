@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Metrik für die X-Achse",
+    "English","Metric for the X axis",
+    "Français","Métrique pour l'axe X",
+    "Italiano","Metrica per l'asse X")

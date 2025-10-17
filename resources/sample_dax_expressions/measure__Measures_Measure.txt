@@ -1,0 +1,1 @@
+SUMX(dimKantone,IF(dimKantone[Kanton]="ZUG",BLANK(),2))

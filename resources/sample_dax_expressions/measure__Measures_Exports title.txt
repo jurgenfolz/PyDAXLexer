@@ -1,0 +1,6 @@
+
+SWITCH([Selected Language],
+    "Deutsch","Exporte",
+    "English","Exports",
+    "Français","Exportations",
+    "Italiano","Esportazioni")

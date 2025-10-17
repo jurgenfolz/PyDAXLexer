@@ -1,0 +1,6 @@
+
+    SWITCH([Selected Language],
+    "Deutsch","Kanton Wählen",
+    "English","Select a canton",
+    "Français","Sélectionnez le canton",
+    "Italiano","Seleziona il cantone")

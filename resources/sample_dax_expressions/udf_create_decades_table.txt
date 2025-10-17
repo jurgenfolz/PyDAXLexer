@@ -1,0 +1,1 @@
+(date_table: table) => CALCULATETABLE(date_table)
