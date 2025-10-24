@@ -1,4 +1,4 @@
-// Generated from /home/klaus/Repositories/PyDAXLexer/src/PyDAX/PyDAXLexer.g4 by ANTLR 4.13.1
+// Generated from c:/Users/KlausFolz/Desktop/Repositories/PyDAXLexer/src/PyDAX/PyDAXLexer.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

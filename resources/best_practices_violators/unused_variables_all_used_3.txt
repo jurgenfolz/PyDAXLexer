@@ -1,0 +1,6 @@
+// Only used variables: x, y, z
+VAR x = SUM('Sales'[SalesAmount])
+VAR y = SUM('Sales'[CostAmount])
+VAR z = DIVIDE(x - y, x)
+RETURN
+    z + y - x

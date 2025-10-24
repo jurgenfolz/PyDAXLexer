@@ -1,0 +1,5 @@
+// Violation: Using FILTER('Table', 'Table'[Column] = "Value") as a CALCULATE filter argument (prefer column predicate or KEEPFILTERS)
+CALCULATE(
+    [Total Sales],
+    FILTER('Customers', 'Customers'[Country] = "USA")
+)

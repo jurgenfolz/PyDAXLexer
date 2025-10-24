@@ -1,0 +1,9 @@
+// Three used variables (a, b, c) and three unused variables (d, e, f)
+VAR a = SUM('Sales'[SalesAmount])
+VAR b = COUNTROWS('Sales')
+VAR c = AVERAGE('Sales'[SalesAmount])
+VAR d = 123
+VAR e = NOW()
+VAR f = "unused"
+RETURN
+    a + b + c

@@ -1,0 +1,5 @@
+// Violation: Variables declared with VAR are never used
+VAR tmpSales = SUM('Sales'[SalesAmount])
+VAR x = 1
+RETURN
+    0

@@ -1,3 +1,15 @@
-venv/*
-tests/__pycache__/*
-src/PyDAX/__pycache__/*
+# Python cache
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# Packaging metadata
+*.egg-info/
+
+# Build artifacts
+build/
+dist/
+
+# Virtual envs
+.venv/
+venv/

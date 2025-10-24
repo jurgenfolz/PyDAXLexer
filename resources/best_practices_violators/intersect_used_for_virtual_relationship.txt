@@ -1,0 +1,8 @@
+// Violation: Using INTERSECT for a virtual relationship
+CALCULATE(
+    [Total Sales],
+    INTERSECT(
+        VALUES('DimCustomer'[CustomerKey]),
+        VALUES('BridgeCustomer'[CustomerKey])
+    )
+)

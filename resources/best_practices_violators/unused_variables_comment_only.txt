@@ -1,0 +1,5 @@
+// Two unused variables: u and v. 'v' is mentioned in this comment but not really used.
+VAR u = 42
+VAR v = "hello"
+RETURN
+    0 // pretend to use v here, but it's only in a comment: v
