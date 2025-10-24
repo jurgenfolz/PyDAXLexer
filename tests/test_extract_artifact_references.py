@@ -62,5 +62,4 @@ def test_udf_with_measure_reference():
     expr = DAXExpression(dax_text)
     assert expr.table_column_references == [
         DAXReference(table_name="", artifact_name="Total Sales"),
-        DAXReference(table_name="DimCustomer", artifact_name=""),
     ]

@@ -225,7 +225,7 @@ class DAXExpression:
     
     # region #! DAX Expression HTML Generation Methods
     
-    def generate_html(self, light: bool = True) -> str:
+    def generate_html(self, name: str = "", light: bool = True) -> str:
         """Generates an HTML string with colorized DAX elements in light or dark mode"""
         # Define colors for both modes
         dark_mode = {
@@ -256,7 +256,8 @@ class DAXExpression:
         colors = dark_mode if not light else light_mode
         
         # HTML template
-        html_output = [f'<pre style="font-family: Consolas, monospace; background-color: {colors["background"]}; color: {colors["text_color"]}; padding: 10px;">']
+        prefix = f"{name} = " if name else ""
+        html_output = [f'<pre style="font-family: Consolas, monospace; background-color: {colors["background"]}; color: {colors["text_color"]}; padding: 10px;">{prefix}']
         
         self.lexer.reset()
         token: Token = self.lexer.nextToken()
@@ -290,14 +291,14 @@ class DAXExpression:
         html_output.append('</pre>')
         return ''.join(html_output)
     
-    def save_html_to_file(self, file_name: str, light: bool = True) -> None:
+    def save_html_to_file(self, file_name: str, name: str = "",light: bool = True) -> None:
         """Saves the generated HTML code to a file."""
-        html_code = self.generate_html(light=light)
+        html_code = self.generate_html(name=name, light=light)
         with open(file_name, 'w', encoding='utf-8') as file:
             file.write(html_code)
         print(f"HTML saved to {file_name}")
     
-    def generate_html_with_violations(self, light: bool = True) -> str:
+    def generate_html_with_violations(self, name: str = "", light: bool = True) -> str:
         """Generates HTML like generate_html, but highlights best-practice violations.
 
         For each token listed in any rule's violators_tokens, the corresponding character span
@@ -346,13 +347,14 @@ class DAXExpression:
                         key = (start, stop)
                         names = violation_spans.setdefault(key, set())
                         # use short name for compactness
-                        rule_name = f" /*{rule.short_name}*/"
+                        rule_name = f" /*( {rule.short_name} )*/"
                         names.add(str(rule_name))
                 except Exception:
                     # skip any token without valid span info
                     continue
 
-        html_output = [f'<pre style="font-family: Consolas, monospace; background-color: {colors["background"]}; color: {colors["text_color"]}; padding: 10px;">']
+        prefix = f"{name} = " if name else ""
+        html_output = [f'<pre style="font-family: Consolas, monospace; background-color: {colors["background"]}; color: {colors["text_color"]}; padding: 10px;">{prefix}']
 
         self.lexer.reset()
         token: Token = self.lexer.nextToken()
@@ -417,12 +419,11 @@ class DAXExpression:
         html_output.append('</pre>')
         return ''.join(html_output)
 
-    def save_html_with_violations_to_file(self, file_name: str, light: bool = True) -> None:
+    def save_html_with_violations_to_file(self, file_name: str, name: str = "", light: bool = True) -> None:
         """Saves the generated HTML with violation highlights to a file."""
-        html_code = self.generate_html_with_violations(light=light)
+        html_code = self.generate_html_with_violations(name=name, light=light)
         with open(file_name, 'w', encoding='utf-8') as file:
             file.write(html_code)
         print(f"HTML with violations saved to {file_name}")
 
     # enregion #! DAX Expression HTML Generation Methods
-    
