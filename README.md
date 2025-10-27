@@ -29,15 +29,15 @@ if __name__ == '__main__':
     # FILTER on table+column inside CALCULATE
     # FILTER on table with measure predicate inside CALCULATE
     dax_expression = """
-    // Demo calc with intentional violations
+    // Demo measure with intentional violations
     VAR UnusedVar1 = 123
     VAR SalesPerCustomer = SUM(Sales[Amount]) / COUNTROWS(VALUES(Customers[CustomerID]))
     VAR UnusedVar2 = IFERROR(SUM('Sales'[DiscountAmount]), 0)
     RETURN
     CALCULATE(
         [Total Sales],
-        FILTER('Sales', 'Sales'[Quantity] > 10),            // column filter (violation)
-        FILTER('Sales', [Total Sales] > 1000)               // table + measure filter (violation)
+        FILTER('Sales', 'Sales'[Quantity] > 10), // column filter (violation)
+        FILTER('Sales', [Total Sales] > 1000) // table + measure filter (violation)
     )
     """
 
