@@ -45,7 +45,13 @@ class DAXExpression:
         # Restore the attributes
         state["input_stream"] = InputStream(state["dax_expression"]) 
         state["lexer"] = PyDAXLexer(state["input_stream"])
-        #TODO: add here table_column_references from when they were a tuple and not a class
+        #Handles the change from tuples to DAXrefrence objects
+        if "table_column_references" in state:
+            if isinstance(state["table_column_references"], list):
+                if all(isinstance(item, tuple) and len(item) == 2 for item in state["table_column_references"]):
+                    state["table_column_references"] = [DAXReference(table_name=t[0], artifact_name=t[1]) for t in state["table_column_references"]]
+        
+        
         self.__dict__.update(state)
     
     @property
@@ -262,7 +268,7 @@ class DAXExpression:
         self.lexer.reset()
         token: Token = self.lexer.nextToken()
         while token.type != Token.EOF:
-            # Prepare display text and escape only HTML control chars (<, >, &)
+            # Prepare display text and escape only HTML control chars (<,' >, &)
             display_text = token.text
             # DAX shows measures/columns in brackets
             if token.type == PyDAXLexer.COLUMN_OR_MEASURE:

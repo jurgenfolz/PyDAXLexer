@@ -1,7 +1,9 @@
+import re
 from .best_practice_rule import BestPracticeRule
 from ..PyDAXLexer import PyDAXLexer
 from antlr4 import Token
 
+#! Limitation: Currently n ot checking for multiple violations on the same expression
 
 rule_metadata = {
     "ID": "FILTER_MEASURE_VALUES_BY_COLUMNS",
@@ -26,13 +28,43 @@ class FilterMeasureValuesByColumns(BestPracticeRule):
             short_name=rule_metadata["short_name"],
             lexer=lexer,
         )
+        self.patterns = [
+            re.compile(
+                r"CALCULATE\s*\(\s*[^,]+,\s*FILTER\s*\(\s*'?[A-Za-z0-9 _]+'?\s*,\s*\[[^\]]+\]",
+                re.IGNORECASE,
+            ),
+            re.compile(
+                r"CALCULATETABLE\s*\([^,]*,\s*FILTER\s*\(\s*'?[A-Za-z0-9 _]+'?\s*,\s*\[",
+                re.IGNORECASE,
+            ),
+        ]
 
     def verify_violation(self) -> None:
         self.clear_violations()
         self.lexer.reset()
-        token: Token = self.lexer.nextToken()
-        while token.type != Token.EOF:
-            if token.type == PyDAXLexer.FILTER:
-                self.violators_tokens.append(token)
-            token = self.lexer.nextToken()
+
+        full_text = self.lexer.inputStream.strdata
+
+        # Make sure that the expression contains a CALCULATE or CALCULATETABLE outside of comments/strings
+        self.lexer.reset()
+        all_tokens: list[Token] = self.lexer.getAllTokens()
+        keyword_tokens = [t for t in all_tokens if t.channel == PyDAXLexer.KEYWORD_CHANNEL]
+        has_calculate = any(
+            t.type in (PyDAXLexer.CALCULATE, PyDAXLexer.CALCULATETABLE) for t in keyword_tokens
+        )
+        if not has_calculate:
+            self.verified = True
+            return
+
+        filter_tokens = [t for t in keyword_tokens if t.type == PyDAXLexer.FILTER]
+
+        # Find all violations via regex spans and map them to FILTER tokens by position
+        for pattern in self.patterns:
+            for match in pattern.finditer(full_text):
+                start, end = match.span()
+                for ft in filter_tokens:
+                    if ft.start >= start and ft.stop < end:
+                        if ft not in self.violators_tokens:
+                            self.violators_tokens.append(ft)
+
         self.verified = True
