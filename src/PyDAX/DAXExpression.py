@@ -25,6 +25,7 @@ class DAXExpression:
         self.clean_dax_expression: str = self.clean_expression()
         
         # Initialize best practice rules
+        self.best_practice_attributes_initialized: bool = False
         self.init_best_practices_rules()
 
         if verify_best_practices:
@@ -42,17 +43,36 @@ class DAXExpression:
         return state
 
     def __setstate__(self, state):
+        #* This fucking thing here is used to handle unpickling of previous versions of the class
+        verify_rules = False
+        
         # Restore the attributes
         state["input_stream"] = InputStream(state["dax_expression"]) 
         state["lexer"] = PyDAXLexer(state["input_stream"])
+        
         #Handles the change from tuples to DAXrefrence objects
         if "table_column_references" in state:
             if isinstance(state["table_column_references"], list):
                 if all(isinstance(item, tuple) and len(item) == 2 for item in state["table_column_references"]):
                     state["table_column_references"] = [DAXReference(table_name=t[0], artifact_name=t[1]) for t in state["table_column_references"]]
         
+        if not 'best_practice_attributes_initialized' in state:
+            state['best_practice_attributes_initialized'] = False
+            state['use_divide_function_for_division'] = UseDivide(lexer=state["lexer"])
+            state['avoid_using_iferror_function'] = AvoidIfError(lexer=state["lexer"])
+            state['use_the_treatas_function_instead_of_intersect'] = UseTreatasInsteadOfIntersect(lexer=state["lexer"])
+            state['filter_column_values'] = FilterColumnValues(lexer=state["lexer"])
+            state['filter_measure_values_by_columns'] = FilterMeasureValuesByColumns(lexer=state["lexer"])
+            state['unused_variables'] = UnusedVariables(lexer=state["lexer"])
+            state['avoid_using_1_x_y_syntax'] = AvoidOneMinusDivision(lexer=state["lexer"])
+            state['evaluateandlog_should_not_be_used_in_production_models'] = EvaluateAndLogShouldNotBeUsedInProductionModels(lexer=state["lexer"])
+            verify_rules = True
+        
         
         self.__dict__.update(state)
+        
+        if verify_rules:
+            self.verify_best_practices()
     
     @property
     def best_practice_rules(self) -> list[BestPracticeRule]:
