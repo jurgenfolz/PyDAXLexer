@@ -2,6 +2,7 @@ import re
 from .best_practice_rule import BestPracticeRule
 from ..PyDAXLexer import PyDAXLexer
 from antlr4 import Token
+from ..DAXToken import DAXToken
 
 #! Limitation: Currently n ot checking for multiple violations on the same expression
 
@@ -63,6 +64,6 @@ class FilterColumnValues(BestPracticeRule):
                 for ft in filter_tokens:
                     if ft.start >= match_start and ft.stop < match_end:
                         if ft not in self.violators_tokens:
-                            self.violators_tokens.append(ft)
+                            self.violators_tokens.append(DAXToken(ft))
         
         self.verified = True

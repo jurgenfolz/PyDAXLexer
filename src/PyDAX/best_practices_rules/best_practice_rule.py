@@ -1,6 +1,7 @@
 from antlr4 import Token
 from ..PyDAXLexer import PyDAXLexer
 from typing import Literal
+from ..DAXToken import DAXToken
 
 class BestPracticeRule:
     def __init__(self, id: str, name: str, description: str, severity: str, category: str, short_name: str, lexer: PyDAXLexer) -> None:
@@ -14,10 +15,16 @@ class BestPracticeRule:
 
         #Verification attr
         self.verified: bool = False
-        self.violators_tokens: list[Token] = []
+        self.violators_tokens: list[DAXToken] = []
     
     def __str__(self) -> str:
         return f"{self.name} - Verified: {self.verified}, Violations: {len(self.violators_tokens)}"
+    
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        # Handle attributes that can't be pickled
+        state["lexer"] = None
+        return state
     
     @property
     def violated(self) -> bool:

@@ -1,7 +1,7 @@
 from .best_practice_rule import BestPracticeRule
 from ..PyDAXLexer import PyDAXLexer
 from antlr4 import Token
-
+from ..DAXToken import DAXToken
 
 rule_metadata = {
     "ID": "UNUSED_VARIABLES",
@@ -66,6 +66,6 @@ class UnusedVariables(BestPracticeRule):
 
         for name_l, def_tok in var_defs.items():
             if name_l not in used:
-                self.violators_tokens.append(def_tok)
+                self.violators_tokens.append(DAXToken(def_tok))
 
         self.verified = True

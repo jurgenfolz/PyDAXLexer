@@ -40,6 +40,7 @@ class DAXExpression:
         # Handle attributes that can't be pickled
         state["input_stream"] = None 
         state["lexer"] = None
+        
         return state
 
     def __setstate__(self, state):
@@ -70,6 +71,9 @@ class DAXExpression:
         
         
         self.__dict__.update(state)
+        
+        for rule in self.best_practice_rules:
+            rule.lexer = self.lexer
         
         if verify_rules:
             self.verify_best_practices()

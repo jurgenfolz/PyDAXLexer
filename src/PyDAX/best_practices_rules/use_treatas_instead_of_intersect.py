@@ -1,7 +1,7 @@
 from .best_practice_rule import BestPracticeRule
 from ..PyDAXLexer import PyDAXLexer
 from antlr4 import Token
-
+from ..DAXToken import DAXToken
 
 rule_metadata = {
     "ID": "USE_THE_TREATAS_FUNCTION_INSTEAD_OF_INTERSECT",
@@ -33,6 +33,6 @@ class UseTreatasInsteadOfIntersect(BestPracticeRule):
         token: Token = self.lexer.nextToken()
         while token.type != Token.EOF:
             if token.type == PyDAXLexer.INTERSECT:
-                self.violators_tokens.append(token)
+                self.violators_tokens.append(DAXToken(token))
             token = self.lexer.nextToken()
         self.verified = True

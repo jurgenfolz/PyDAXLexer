@@ -1,7 +1,8 @@
+
 from .best_practice_rule import BestPracticeRule
 from ..PyDAXLexer import PyDAXLexer
 from antlr4 import Token
-
+from ..DAXToken import DAXToken
 
 rule_metadata = {
     "ID": "AVOID_USING_'1-(X/Y)'_SYNTAX",
@@ -54,5 +55,5 @@ class AvoidOneMinusDivision(BestPracticeRule):
                         w.type == PyDAXLexer.DIV for w in window[i + 2 : min(len(window), i + 12)]
                     )
                     if op.type in (PyDAXLexer.PLUS, PyDAXLexer.MINUS) and has_div:
-                        self.violators_tokens.append(op)
+                        self.violators_tokens.append(DAXToken(op))
         self.verified = True

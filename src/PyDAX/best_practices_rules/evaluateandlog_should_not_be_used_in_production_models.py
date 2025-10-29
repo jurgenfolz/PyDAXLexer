@@ -1,7 +1,7 @@
 from .best_practice_rule import BestPracticeRule
 from ..PyDAXLexer import PyDAXLexer
 from antlr4 import Token
-
+from ..DAXToken import DAXToken
 
 rule_metadata = {
     "ID": "EVALUATEANDLOG_SHOULD_NOT_BE_USED_IN_PRODUCTION_MODELS",
@@ -33,6 +33,6 @@ class EvaluateAndLogShouldNotBeUsedInProductionModels(BestPracticeRule):
         token: Token = self.lexer.nextToken()
         while token.type != Token.EOF:
             if token.type == PyDAXLexer.EVALUATEANDLOG:
-                self.violators_tokens.append(token)
+                self.violators_tokens.append(DAXToken(token))
             token = self.lexer.nextToken()
         self.verified = True
