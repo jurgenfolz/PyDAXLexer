@@ -259,7 +259,14 @@ class DAXExpression:
 
         while token.type != Token.EOF:
             if token.channel != PyDAXLexer.COMMENTS_CHANNEL:
-                result.append(token.text)
+                # Preserve brackets around column/measure tokens if lexer normalizes them
+                if token.type == PyDAXLexer.COLUMN_OR_MEASURE:
+                    txt = token.text or ""
+                    if not (txt.startswith('[') and txt.endswith(']')):
+                        txt = f'[{txt}]'
+                    result.append(txt)
+                else:
+                    result.append(token.text)
             token = self.lexer.nextToken()
         
         return ''.join(result)
