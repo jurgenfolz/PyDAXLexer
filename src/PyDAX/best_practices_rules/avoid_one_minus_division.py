@@ -56,4 +56,5 @@ class AvoidOneMinusDivision(BestPracticeRule):
                     )
                     if op.type in (PyDAXLexer.PLUS, PyDAXLexer.MINUS) and has_div:
                         self.violators_tokens.append(DAXToken(op))
+                        self.highlight_tokens.append(DAXToken(op))
         self.verified = True

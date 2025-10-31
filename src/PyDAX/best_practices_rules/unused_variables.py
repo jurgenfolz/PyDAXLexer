@@ -67,5 +67,6 @@ class UnusedVariables(BestPracticeRule):
         for name_l, def_tok in var_defs.items():
             if name_l not in used:
                 self.violators_tokens.append(DAXToken(def_tok))
+                self.highlight_tokens.append(DAXToken(def_tok))
 
         self.verified = True

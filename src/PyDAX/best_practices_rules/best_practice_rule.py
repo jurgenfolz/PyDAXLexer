@@ -16,6 +16,7 @@ class BestPracticeRule:
         #Verification attr
         self.verified: bool = False
         self.violators_tokens: list[DAXToken] = []
+        self.highlight_tokens: list[DAXToken] = []
     
     def __str__(self) -> str:
         return f"{self.name} - Verified: {self.verified}, Violations: {len(self.violators_tokens)}"

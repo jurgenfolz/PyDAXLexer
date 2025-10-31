@@ -406,34 +406,23 @@ ALPHABETICAL:                            'ALPHABETICAL'                         
 KEEP:									 'KEEP'									   -> channel(KEYWORD_CHANNEL);
 REL:									 'REL'									   -> channel(KEYWORD_CHANNEL);
 
-DATE_LITERAL
-    : 'DT"' (~'"' | '""')* '"'
-      { self.text = self.text[3:-1] }          // drop  DT"  …  "
-    ;
+EXPR:									 'EXPR'									   -> channel(KEYWORD_CHANNEL);
+VAL:									 'VAL'									   -> channel(KEYWORD_CHANNEL);
 
-INTEGER_LITERAL
-    : [0-9]+
-    ;
+ANYVAL:									 'ANYVAL'								   -> channel(KEYWORD_CHANNEL);
+ANYREF:									 'ANYREF'								   -> channel(KEYWORD_CHANNEL);
+SCALAR:									 'SCALAR'								   -> channel(KEYWORD_CHANNEL);
 
-REAL_LITERAL
-    : [0-9]* '.' [0-9]+
-    ;
+INT64:									 'INT64'								   -> channel(KEYWORD_CHANNEL);
+DECIMAL:							     'DECIMAL'								   -> channel(KEYWORD_CHANNEL);
+NUMERIC:							     'NUMERIC'								   -> channel(KEYWORD_CHANNEL);
 
-STRING_LITERAL
-    : '"' (~'"' | '""')* '"'
-      { self.text = self.text[1:-1] }          // drop leading/ending quotes
-    ;
-
-TABLE
-    : '\'' (~["\\'\r\n\u0085\u2028\u2029] | '\'\'')* '\''
-      { self.text = self.text[1:-1].replace("''", "'") }
-    ;
-
-COLUMN_OR_MEASURE
-    : '[' (~["\]\r\n\u0085\u2028\u2029] | ']]')* ']'
-      { self.text = self.text[1:-1].replace("]]", "]") }
-    ;
-
+DATE_LITERAL:          'DT"' (~'"' | '""')* '"' {self.text = self.text[3:-1];};
+INTEGER_LITERAL:       [0-9]+;
+REAL_LITERAL:          [0-9]* '.' [0-9]+;
+STRING_LITERAL:        '"' (~'"' | '""')* '"' {self.text = self.text[1:-1];};
+TABLE:                 '\'' (~["'\r\n\u0085\u2028\u2029] | '\'\'')* '\'' {self.text = self.text[1:-1].replace("''","'");};
+COLUMN_OR_MEASURE:     '[' (~["\]\r\n\u0085\u2028\u2029] | ']]')* ']'   {self.text = self.text[1:-1].replace("]]","]");};
 TABLE_OR_VARIABLE:     IdentifierOrKeyword;
 
 OPEN_CURLY:			   '{';
@@ -455,6 +444,8 @@ OP_OR:                 '||';
 OP_NE:                 '<>';
 OP_LE:                 '<=';
 OP_GE:                 '>=';
+LAMBDA:				   '=>';
+COLON:				   ':';
 
 
 fragment InputCharacter:       ~[\r\n\u0085\u2028\u2029];

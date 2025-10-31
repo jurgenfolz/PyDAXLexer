@@ -67,5 +67,6 @@ class FilterMeasureValuesByColumns(BestPracticeRule):
                     if ft.start >= start and ft.stop < end:
                         if ft not in self.violators_tokens:
                             self.violators_tokens.append(DAXToken(ft))
+                            self.highlight_tokens.append(DAXToken(ft))
 
         self.verified = True

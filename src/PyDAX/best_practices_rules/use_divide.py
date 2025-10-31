@@ -39,6 +39,7 @@ class UseDivide(BestPracticeRule):
         while token.type != Token.EOF:
             if token.type == PyDAXLexer.DIV:
                 self.violators_tokens.append(DAXToken(token))
+                self.highlight_tokens.append(DAXToken(token))
                 
             token = self.lexer.nextToken()
         

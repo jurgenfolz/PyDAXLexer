@@ -37,6 +37,7 @@ class AvoidIfError(BestPracticeRule):
         while token.type != Token.EOF:
             if token.type == PyDAXLexer.IFERROR:
                 self.violators_tokens.append(DAXToken(token))
+                self.highlight_tokens.append(DAXToken(token))
                 
             token = self.lexer.nextToken()
         

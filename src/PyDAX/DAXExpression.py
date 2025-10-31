@@ -376,9 +376,13 @@ class DAXExpression:
                             highlight_mask[i] = True
                         key = (start, stop)
                         names = violation_spans.setdefault(key, set())
-                        # use short name for compactness
-                        rule_name = f" /*( {rule.short_name} )*/"
-                        names.add(str(rule_name))
+                        # Prefer rule.short_name for compact tooltip; fallback to name/description
+                        label = (
+                            getattr(rule, 'description', None)
+                            or getattr(rule, 'name', None)
+                            or getattr(rule, 'short_name', '')
+                        )
+                        names.add(str(label))
                 except Exception:
                     # skip any token without valid span info
                     continue
@@ -428,10 +432,22 @@ class DAXExpression:
             else:
                 color_style = f'color: {colors["text_color"]};'
 
-            # Add violation background if needed and append rule labels after token
-            label_html = ''
+            # Add MS Word-like underline for violations and set tooltip with rule short names
+            title_attr = ''
             if is_violation:
-                color_style += ' background-color: #ffcccc;'
+                # Force red text for visibility in environments that don't support colored/wavy underline
+                # Also add a plain underline as a broad fallback, then refine with wavy style where supported
+                color_style += (
+                    ' color: #ff0000 !important;'
+                    ' text-decoration: underline;'
+                    ' text-decoration-line: underline;'
+                    ' text-decoration-style: wavy;'
+                    ' text-decoration-color: #ff0000;'
+                    ' -webkit-text-decoration-color: #ff0000;'
+                    ' -webkit-text-decoration-style: wavy;'
+                    ' text-underline-offset: 2px;'
+                    ' cursor: help;'
+                )
                 # Aggregate overlapping rule names for this token span
                 label_names: set[str] = set()
                 if isinstance(start, int) and isinstance(stop, int):
@@ -441,9 +457,9 @@ class DAXExpression:
                 if label_names:
                     names_text = ', '.join(sorted(label_names))
                     names_text_safe = html.escape(names_text, quote=False)
-                    label_html = f'<span style="font-size: 0.8em; color: #666; background-color: #ffcccc; margin-left: 2px;">{names_text_safe}</span>'
+                    title_attr = f' title="{names_text_safe}"'
 
-            html_output.append(f'<span style="{color_style}">{safe_text}</span>' + label_html)
+            html_output.append(f'<span style="{color_style}"{title_attr}>{safe_text}</span>')
             token = self.lexer.nextToken()
 
         html_output.append('</pre>')
