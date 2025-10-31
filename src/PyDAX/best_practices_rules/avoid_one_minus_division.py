@@ -12,7 +12,7 @@ rule_metadata = {
         "Avoid 1 - (x / y) or 1 + (x / y) patterns; prefer DIVIDE and variable precomputation."
     ),
     "Severity": 2,
-    "short_name": "Avoid 1-(X/Y) syntax"
+    "short_name": "Avoid using '1-(x/y)' syntax"
 }
 
 

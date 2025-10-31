@@ -11,7 +11,7 @@ rule_metadata = {
       "Category": "DAX Expressions",
       "Description": "Use the DIVIDE  function instead of using \"/\". The DIVIDE function resolves divide-by-zero cases. As such, it is recommended to use to avoid errors.\r\n\r\nReference: https://docs.microsoft.com/power-bi/guidance/dax-divide-function-operator",
       "Severity": 2,
-      "short_name": "Use DIVIDE instead of /"
+      "short_name": "Use DIVIDE instead of '/' for division"
 }
 
 
@@ -34,14 +34,21 @@ class UseDivide(BestPracticeRule):
         # Check if the DAX expression contains the division operator
         self.clear_violations()
         self.lexer.reset()  # Reset the lexer to start from the beginning
-        token: Token = self.lexer.nextToken()
+        # Collect default-channel tokens in order to identify numerator/denominator
+        tokens: list[Token] = []
+        t: Token = self.lexer.nextToken()
+        while t.type != Token.EOF:
+            if t.channel == Token.DEFAULT_CHANNEL:
+                tokens.append(t)
+            t = self.lexer.nextToken()
 
-        while token.type != Token.EOF:
-            if token.type == PyDAXLexer.DIV:
-                self.violators_tokens.append(DAXToken(token))
-                self.highlight_tokens.append(DAXToken(token))
-                
-            token = self.lexer.nextToken()
+
+        for i, tok in enumerate(tokens):
+            if tok.type == PyDAXLexer.DIV:
+                # Count '/' itself as the violation
+                self.violators_tokens.append(DAXToken(tok))
+                self.highlight_tokens.append(DAXToken(tok))
+
         
         self.verified = True
 

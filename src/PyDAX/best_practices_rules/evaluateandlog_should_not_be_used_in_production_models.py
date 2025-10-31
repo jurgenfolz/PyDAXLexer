@@ -11,7 +11,7 @@ rule_metadata = {
         "The EVALUATEANDLOG function is meant for development/test environments and should not be used in production models."
     ),
     "Severity": 1,
-    "short_name": "EVALUATEANDLOG should not be used"
+    "short_name": "EVALUATEANDLOG should not be used in production models"
 }
 
 

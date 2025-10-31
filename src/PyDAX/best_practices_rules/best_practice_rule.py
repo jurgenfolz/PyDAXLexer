@@ -38,6 +38,8 @@ class BestPracticeRule:
     
     def clear_violations(self) -> None:
         self.violators_tokens.clear()
+        # Also clear highlight spans to avoid stale highlights across runs
+        self.highlight_tokens.clear()
 
     def verify_violation(self, dax_expression) -> None:
         raise NotImplementedError("Subclasses must implement this method")

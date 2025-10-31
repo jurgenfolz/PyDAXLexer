@@ -14,7 +14,7 @@ rule_metadata = {
         "Prefer FILTER over VALUES/ALL('Table'[Column]) for measure filters rather than filtering entire tables."
     ),
     "Severity": 2,
-    "short_name": "Filter measure values by columns"
+    "short_name": "Prefer FILTER over VALUES/ALL('Table'[Column]) for measure filters rather than filtering entire tables"
 }
 
 

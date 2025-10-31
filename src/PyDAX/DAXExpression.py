@@ -292,7 +292,7 @@ class DAXExpression:
         self.lexer.reset()
         token: Token = self.lexer.nextToken()
         while token.type != Token.EOF:
-            # Prepare display text and escape only HTML control chars (<,' >, &)
+            # Prepare display text and escape only HTML control chars
             display_text = token.text
             # DAX shows measures/columns in brackets
             if token.type == PyDAXLexer.COLUMN_OR_MEASURE:
@@ -363,19 +363,31 @@ class DAXExpression:
         highlight_mask = [False] * len(expr_text)
         # Map start, stop and rule names for overlapping violations
         violation_regions: dict[tuple[int, int], set[str]] = {}
+
+        def add_violation_span(start: int, stop: int, label: str) -> None:
+            if not isinstance(start, int) or not isinstance(stop, int):
+                return
+            if not highlight_mask:
+                return
+            # Clamp to valid range just in case lexer indices are slightly out-of-bounds
+            s = max(0, start)
+            e = min(len(highlight_mask) - 1, stop)
+            if s > e:
+                return
+            for i in range(s, e + 1):
+                highlight_mask[i] = True
+            key = (s, e)
+            names = violation_regions.setdefault(key, set())
+            names.add(str(label))
+
         for rule in self.best_practice_rules:
-            for token in rule.highlight_tokens:
+            # Use both highlight_tokens (preferred) and violators_tokens directly
+            tokens_for_rule = list(rule.highlight_tokens)
+            tokens_for_rule.extend(rule.violators_tokens)
+            for token in tokens_for_rule:
                 try:
-                    start = token.start
-                    stop = token.stop
-                    if isinstance(start, int) and isinstance(stop, int) and 0 <= start <= stop < len(highlight_mask):
-                        for i in range(start, stop + 1):
-                            highlight_mask[i] = True
-                        key = (start, stop)
-                        names = violation_regions.setdefault(key, set())
-                        # Tooltip will be the description
-                        label = rule.description
-                        names.add(str(label))
+                    label = rule.short_name
+                    add_violation_span(token.start, token.stop, label)
                 except Exception:
                     # skip tokens without valid region info
                     continue

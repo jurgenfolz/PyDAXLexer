@@ -5,11 +5,11 @@ from ..DAXToken import DAXToken
 
 rule_metadata = {
     "ID": "UNUSED_VARIABLES",
-    "Name": "[DAX Expressions] Unused variables",
+    "Name": "[DAX Expressions] Remove unused variables",
     "Category": "DAX Expressions",
-    "Description": "Flags variables declared with VAR that are never referenced in the expression.",
+    "Description": "A variable is defined but never used in the DAX expression",
     "Severity": 2,
-    "short_name": "Unused variable"
+    "short_name": "Remove unused variables"
 }
 
 

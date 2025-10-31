@@ -11,7 +11,7 @@ rule_metadata = {
       "Category": "DAX Expressions",
       "Description": "Avoid using the IFERROR function as it may cause performance degradation. If you are concerned about a divide-by-zero error, use the DIVIDE function as it naturally resolves such errors as blank (or you can customize what should be shown in case of such an error).\r\nReference: https://www.elegantbi.com/post/top10bestpractices",
       "Severity": 2,
-      "short_name": "Avoid IFERROR"
+      "short_name": "Avoid using the IFERROR function"
     }
 
 class AvoidIfError(BestPracticeRule):
