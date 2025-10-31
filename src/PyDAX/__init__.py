@@ -1,3 +1,3 @@
 from .DAXExpression import DAXExpression
-from .DAXReference import DAXReference
+from .DAXReference import *
 from .best_practices_rules import *

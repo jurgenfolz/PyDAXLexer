@@ -4,7 +4,8 @@ import html
 import warnings
 
 from .PyDAXLexer import PyDAXLexer
-from .DAXReference import DAXReference
+from .DAXReference import *
+from .DAXVariable import DAXVariable
 from .utils import check_contains_function
 from .best_practices_rules import *
 
@@ -20,7 +21,20 @@ class DAXExpression:
         self.lexer.removeErrorListeners()
         
         self.dax_expression_no_comments: str = self.remove_comments()
-        self.table_column_references: list[DAXReference] = self.extract_artifact_references()
+        
+        #*Variables
+        self.variables: list[DAXVariable] = []
+        
+        #*References - Expression uses columns, measures, udfs, tables, etc
+        self.table_column_references: list[DAXArtifactReference] = []
+        
+        self.table_references: list[DAXTableReference] = [] #register standalone table references
+        self.variable_references: list[DAXVariableReference] = [] #register standalone variable references
+        self.function_references: list[DAXFunctionReference] = [] #register standalone function references
+        self.unknown_references: list[DAXUnknownReference] = [] #register unknown references, basically a fallback for the others
+        
+        self.extract_references() #Populkate references
+        
         self.comments: list[str] = self.extract_comments()
         self.clean_dax_expression: str = self.clean_expression()
         
@@ -55,7 +69,7 @@ class DAXExpression:
         if "table_column_references" in state:
             if isinstance(state["table_column_references"], list):
                 if all(isinstance(item, tuple) and len(item) == 2 for item in state["table_column_references"]):
-                    state["table_column_references"] = [DAXReference(table_name=t[0], artifact_name=t[1]) for t in state["table_column_references"]]
+                    state["table_column_references"] = [DAXArtifactReference(table_name=t[0], artifact_name=t[1]) for t in state["table_column_references"]]
         
         if not 'best_practice_attributes_initialized' in state:
             state['best_practice_attributes_initialized'] = False
@@ -143,6 +157,62 @@ class DAXExpression:
     # endregion #? Best Practices Rules
     
     # region #* DAX Expression Analysis Methods
+
+    def detect_variables(self, tokens: list[Token]) -> set[int]:
+        """Detect VAR declarations and populate self.variables.
+        """
+        self.variables = []
+        name_indexes: set[int] = set()
+
+        i = 0
+        n = len(tokens)
+        while i < n:
+            tok = tokens[i]
+            # *both VAR tokens and a fallback 'var' if not tokenized as VAR
+            #TODO: Review the fallback for lowercase 'var'
+            if tok.type == PyDAXLexer.VAR or (isinstance(tok.text, str) and tok.text.upper() == 'VAR'):
+                var_keyword_token = tok
+                # Find the variable name token: scan ahead to the first identifier-like token
+                name_token: Token | None = None
+                name_index: int | None = None
+                p = i + 1
+                while p < n and tokens[p].type not in (PyDAXLexer.ASSIGNMENT, PyDAXLexer.VAR, PyDAXLexer.RETURN):
+                    if tokens[p].type in (PyDAXLexer.TABLE_OR_VARIABLE, PyDAXLexer.TABLE):
+                        name_token = tokens[p]
+                        name_index = p
+                        break
+                    p += 1
+                # Begin scanning expression after name (if found), else after VAR
+                j = (name_index + 1) if name_index is not None else (i + 1)
+                # Skip '=' if present
+                if j < n and tokens[j].type == PyDAXLexer.ASSIGNMENT:
+                    j += 1
+                # Walk forward to next VAR, RETURN, or EOF to mark last token of expression
+                last_expr_token: Token | None = None
+                k = j
+                while k < n:
+                    tk = tokens[k]
+                    is_var_kw = (tk.type == PyDAXLexer.VAR) or (isinstance(tk.text, str) and tk.text.upper() == 'VAR')
+                    if is_var_kw or tk.type == PyDAXLexer.RETURN:
+                        break
+                    last_expr_token = tk
+                    k += 1
+                if name_token is not None:
+                    var_name = self._clean_name(name_token.text)
+                    self.variables.append(
+                        DAXVariable(
+                            name=var_name,
+                            token=name_token,
+                            var_keyword_token=var_keyword_token,
+                            last_expression_token=last_expr_token,
+                        )
+                    )
+                    name_indexes.add(name_index)
+                i = k
+                continue
+            i += 1
+
+        return name_indexes
     
     def print_tokens(self) -> None:
         """Prints all tokens in the DAX expression for debugging purposes"""
@@ -194,23 +264,29 @@ class DAXExpression:
         
         return ''.join(result)
     
-    def extract_artifact_references(self) -> list[tuple[str, str]]:
+    def extract_references(self) -> None:
         """Extracts table and column references from the DAX expression
 
         Returns:
             list[tuple[str]]: List of table and column references in the DAX expression
         """
         self.lexer.reset()
-        # First, collect tokens from the default channel
+        # First, collect tokens from the default and keyword channels (to include VAR/RETURN)
         tokens: list[Token] = []
         token: Token = self.lexer.nextToken()
         while token.type != Token.EOF:
-            if token.channel == Token.DEFAULT_CHANNEL:
+            if token.channel in (Token.DEFAULT_CHANNEL, PyDAXLexer.KEYWORD_CHANNEL):
                 tokens.append(token)
             token = self.lexer.nextToken()
 
-        table_column_references: list[DAXReference] = []
+
+        # Detect variables: pattern VAR <name> = <expr> ... until next VAR/RETURN or EOF
+        variable_name_token_indexes: set[int] = self.detect_variables(tokens)
+
+        
         used_column_indexes: set[int] = set()  # columns already paired with a table
+        used_table_or_variable_indexes: set[int] = set()  # TABLE_OR_VARIABLE tokens already paired with a column
+        used_table_indexes: set[int] = set()  # TABLE tokens already paired with a column
 
         i = 0
         n = len(tokens)
@@ -231,12 +307,14 @@ class DAXExpression:
                         artifact_name = artifact_name[:-1]
                     if artifact_name.startswith('['):
                         artifact_name = artifact_name[1:]
-                    if table_name.endswith("'"):
-                        table_name = table_name[:-1]
-                    if table_name.startswith("'"):
-                        table_name = table_name[1:]
-                    table_column_references.append(DAXReference(table_name=table_name, artifact_name=artifact_name))
+                    table_name = self._clean_name(table_name)
+                    self.table_column_references.append(DAXArtifactReference(table_name=table_name, artifact_name=artifact_name,table_token=token, artifact_token=tokens[j]))
                     used_column_indexes.add(j)
+                    # mark table_or_variable as used if it was a TABLE_OR_VARIABLE token
+                    if token.type == PyDAXLexer.TABLE_OR_VARIABLE:
+                        used_table_or_variable_indexes.add(i)
+                    if token.type == PyDAXLexer.TABLE:
+                        used_table_indexes.add(i)
             i += 1
 
         # Add standalone columns/measures that were not paired with a table
@@ -247,9 +325,37 @@ class DAXExpression:
                     artifact_name = artifact_name[:-1]
                 if artifact_name.startswith('['):
                     artifact_name = artifact_name[1:]
-                table_column_references.append(DAXReference(table_name='', artifact_name=artifact_name))
+                #! In this case we omit the table name and token
+                self.table_column_references.append(DAXArtifactReference(table_name='', artifact_name=artifact_name, artifact_token=token))
 
-        return table_column_references
+        #Classify TABLE_OR_VARIABLE and TABLE tokens that are not part of table[column] pairs
+        for idx, tok in enumerate(tokens):
+            # Skip variable declaration name occurrences
+            if idx in variable_name_token_indexes:
+                continue
+            if tok.type == PyDAXLexer.TABLE_OR_VARIABLE:
+                if idx in used_table_or_variable_indexes:
+                    # was used as table in a qualified column reference, not a standalone ref
+                    continue
+                name = self._clean_name(tok.text)
+                # Check if this token refers to a declared variable
+                is_var = any(var.name == name for var in self.variables)
+                if is_var:
+                    self.variable_references.append(DAXVariableReference(name=name,token=tok))
+                    continue
+                # If followed by '(', consider it a (user-defined) function reference
+                if idx + 1 < n and tokens[idx + 1].type == PyDAXLexer.OPEN_PARENS:
+                    self.function_references.append(DAXFunctionReference(name=name, token=tok))
+                    continue
+                # Otherwise, consider it a standalone table reference
+                self.table_references.append(DAXTableReference(name=name, token=tok))
+            elif tok.type == PyDAXLexer.TABLE:
+                if idx in used_table_indexes:
+                    continue
+                name = self._clean_name(tok.text)
+                self.table_references.append(DAXTableReference(name=name, token=tok))
+
+        
     
     # endregion #* DAX Expression Analysis Methods
     
@@ -475,4 +581,16 @@ class DAXExpression:
             file.write(html_code)
         print(f"HTML with violations saved to {file_name}")
 
-    # enregion #! DAX Expression HTML Generation Methods
+    # endregion #! DAX Expression HTML Generation Methods
+
+    # region #? Helper Methods
+    
+    @staticmethod
+    def _clean_name(text: str) -> str:
+        if text.endswith("'"):
+            text = text[:-1]
+        if text.startswith("'"):
+            text = text[1:]
+        return text
+
+    # endregion #? Helper Methods

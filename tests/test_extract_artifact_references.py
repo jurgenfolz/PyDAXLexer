@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from src.PyDAX import DAXExpression, DAXReference
+from src.PyDAX import DAXExpression, DAXArtifactReference
 
 
 def read_sample(name: str) -> str:
@@ -13,16 +13,16 @@ def read_sample(name: str) -> str:
         return f.read()
 
 
-def test_udf_using_columns_pairs_table_and_column():
+def test_udf_using_columns_pairs_table_and_column(make_artifact_ref):
     dax_text = "() => max(factWeather[temp_c]) + max(factWeather[chance_of_snow])"
     expr = DAXExpression(dax_text)
     assert expr.table_column_references == [
-        DAXReference(table_name="factWeather", artifact_name="temp_c"),
-        DAXReference(table_name="factWeather", artifact_name="chance_of_snow"),
+        make_artifact_ref(table_name="factWeather", artifact_name="temp_c"),
+        make_artifact_ref(table_name="factWeather", artifact_name="chance_of_snow"),
     ]
 
 
-def test_measure_displayed_charts():
+def test_measure_displayed_charts(make_artifact_ref):
     
     dax_text = """SWITCH(
     [Selected metric],
@@ -36,30 +36,29 @@ def test_measure_displayed_charts():
     
     expr = DAXExpression(dax_text)
     assert expr.table_column_references == [
-        DAXReference(table_name="", artifact_name="Selected metric"),
-        DAXReference(table_name="", artifact_name="Average Temperature (℃)"),
-        DAXReference(table_name="", artifact_name="Average Temperature (℃)"),
-        DAXReference(table_name="", artifact_name="Average Pressure (mB)"),
-        DAXReference(table_name="", artifact_name="Relative humidity (%)"),
-        DAXReference(table_name="", artifact_name="Average wind speed (km/h)"),
-        DAXReference(table_name="", artifact_name="Average wind speed (km/h)"),
-        DAXReference(table_name="", artifact_name="Rain probability (%)"),
-        
+        make_artifact_ref(table_name="", artifact_name="Selected metric"),
+        make_artifact_ref(table_name="", artifact_name="Average Temperature (℃)"),
+        make_artifact_ref(table_name="", artifact_name="Average Temperature (℃)"),
+        make_artifact_ref(table_name="", artifact_name="Average Pressure (mB)"),
+        make_artifact_ref(table_name="", artifact_name="Relative humidity (%)"),
+        make_artifact_ref(table_name="", artifact_name="Average wind speed (km/h)"),
+        make_artifact_ref(table_name="", artifact_name="Average wind speed (km/h)"),
+        make_artifact_ref(table_name="", artifact_name="Rain probability (%)"),
 
     ]
     
-def test_measure_imports():
+def test_measure_imports(make_artifact_ref):
     
     dax_text = """CALCULATE(SUM(factTrades[Value (thousands USD)]),factTrades[Export]="Import")"""
     expr = DAXExpression(dax_text)
     assert expr.table_column_references == [
-        DAXReference(table_name="factTrades", artifact_name="Value (thousands USD)"),
-        DAXReference(table_name="factTrades", artifact_name="Export"),
+        make_artifact_ref(table_name="factTrades", artifact_name="Value (thousands USD)"),
+        make_artifact_ref(table_name="factTrades", artifact_name="Export"),
     ]
     
-def test_udf_with_measure_reference():
+def test_udf_with_measure_reference(make_artifact_ref):
     dax_text = "() => [Total Sales] / COUNTROWS(DimCustomer)"
     expr = DAXExpression(dax_text)
     assert expr.table_column_references == [
-        DAXReference(table_name="", artifact_name="Total Sales"),
+        make_artifact_ref(table_name="", artifact_name="Total Sales"),
     ]

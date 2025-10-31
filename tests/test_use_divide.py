@@ -1,5 +1,5 @@
 import pytest
-from src.PyDAX import DAXExpression, DAXReference
+from src.PyDAX import DAXExpression, DAXArtifactReference
 
 def test_use_divide_rule():
     dax = "1 / 0"
@@ -40,7 +40,7 @@ def test_use_divide_in_variable():
     
     assert expr.table_column_references == []
     
-def test_use_divide_with_columns():
+def test_use_divide_with_columns(make_artifact_ref):
     dax = "DIVIDE(Sales[Amount], Sales[Total])"
     expr = DAXExpression(dax)
 
@@ -49,11 +49,11 @@ def test_use_divide_with_columns():
     assert len(expr.use_divide_function_for_division.violators_tokens) == 0
     
     assert expr.table_column_references == [
-        DAXReference(table_name="Sales", artifact_name="Amount"),
-        DAXReference(table_name="Sales", artifact_name="Total"),
+        make_artifact_ref(table_name="Sales", artifact_name="Amount"),
+        make_artifact_ref(table_name="Sales", artifact_name="Total"),
     ]
     
-def test_use_divide_with_mixed():
+def test_use_divide_with_mixed(make_artifact_ref):
     dax = "1 / 0 + DIVIDE(Sales[Amount], Sales[Total])"
     expr = DAXExpression(dax)
 
@@ -62,6 +62,6 @@ def test_use_divide_with_mixed():
     assert len(expr.use_divide_function_for_division.violators_tokens) == 1
     
     assert expr.table_column_references == [
-        DAXReference(table_name="Sales", artifact_name="Amount"),
-        DAXReference(table_name="Sales", artifact_name="Total"),
+        make_artifact_ref(table_name="Sales", artifact_name="Amount"),
+        make_artifact_ref(table_name="Sales", artifact_name="Total"),
     ]

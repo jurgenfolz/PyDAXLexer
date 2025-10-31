@@ -1,5 +1,5 @@
 import pytest
-from src.PyDAX import DAXExpression, DAXReference
+from src.PyDAX import DAXExpression, DAXArtifactReference
 
 def test_use_treatas_instead_of_intersect_rule():
     dax = "INTERSECT(Table1, Table2)"
@@ -40,7 +40,7 @@ def test_use_treatas_in_variable():
     
     assert expr.table_column_references == []
     
-def test_use_treatas_with_columns():
+def test_use_treatas_with_columns(make_artifact_ref):
     dax = "TREATAS(Table1[ColumnA], Table2[ColumnB])"
     expr = DAXExpression(dax)
 
@@ -49,6 +49,6 @@ def test_use_treatas_with_columns():
     assert len(expr.use_the_treatas_function_instead_of_intersect.violators_tokens) == 0
     
     assert expr.table_column_references == [
-        DAXReference(table_name="Table1", artifact_name="ColumnA"),
-        DAXReference(table_name="Table2", artifact_name="ColumnB"),
+        make_artifact_ref(table_name="Table1", artifact_name="ColumnA"),
+        make_artifact_ref(table_name="Table2", artifact_name="ColumnB"),
     ]
