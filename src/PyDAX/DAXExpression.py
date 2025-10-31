@@ -330,9 +330,6 @@ class DAXExpression:
     
     def generate_html_with_violations(self, name: str = "", light: bool = True) -> str:
         """Generates HTML like generate_html, but highlights best-practice violations.
-
-        For each token listed in any rule's violators_tokens, the corresponding character span
-        [token.start, token.stop] in the original expression will be rendered with a light red background.
         """
         #! colors for both modes
         dark_mode = {
@@ -361,30 +358,26 @@ class DAXExpression:
 
         colors = dark_mode if not light else light_mode
 
-        # Build a mask of characters that belong to any violation span and map spans to rule names
+        # Build a mask of characters that belong to any violation region and map regions to rule names
         expr_text = self.dax_expression or ""
         highlight_mask = [False] * len(expr_text)
         # Map start, stop and rule names for overlapping violations
-        violation_spans: dict[tuple[int, int], set[str]] = {}
+        violation_regions: dict[tuple[int, int], set[str]] = {}
         for rule in self.best_practice_rules:
-            for tok in getattr(rule, 'violators_tokens', []) or []:
+            for token in rule.highlight_tokens:
                 try:
-                    start = getattr(tok, 'start', None)
-                    stop = getattr(tok, 'stop', None) or getattr(tok, 'end', None)
+                    start = token.start
+                    stop = token.stop
                     if isinstance(start, int) and isinstance(stop, int) and 0 <= start <= stop < len(highlight_mask):
                         for i in range(start, stop + 1):
                             highlight_mask[i] = True
                         key = (start, stop)
-                        names = violation_spans.setdefault(key, set())
-                        # Prefer rule.short_name for compact tooltip; fallback to name/description
-                        label = (
-                            getattr(rule, 'description', None)
-                            or getattr(rule, 'name', None)
-                            or getattr(rule, 'short_name', '')
-                        )
+                        names = violation_regions.setdefault(key, set())
+                        # Tooltip will be the description
+                        label = rule.description
                         names.add(str(label))
                 except Exception:
-                    # skip any token without valid span info
+                    # skip tokens without valid region info
                     continue
 
         prefix = f"{name} = " if name else ""
@@ -393,20 +386,18 @@ class DAXExpression:
         self.lexer.reset()
         token: Token = self.lexer.nextToken()
         while token.type != Token.EOF:
-            # Determine if this token overlaps any violation span
+            # Determine if this token overlaps any violation region
             is_violation = False
             try:
-                start = getattr(token, 'start', None)
-                stop = getattr(token, 'stop', None)
-                if stop is None:
-                    stop = getattr(token, 'end', None)
+                start = token.start
+                stop = token.stop
                 if isinstance(start, int) and isinstance(stop, int) and 0 <= start <= stop < len(highlight_mask):
-                    # if any char in span is highlighted, mark token as violation
+                    # if any char in region is highlighted, mark token as violation
                     is_violation = any(highlight_mask[start:stop+1])
             except Exception:
                 is_violation = False
 
-            # Prepare display text and escape only HTML control chars (<, >, &)
+            # Prepare text and escape HTML control chars (<, >, &)
             display_text = token.text
             if token.type == PyDAXLexer.COLUMN_OR_MEASURE:
                 if not (display_text.startswith('[') and display_text.endswith(']')):
@@ -414,7 +405,7 @@ class DAXExpression:
 
             safe_text = html.escape(display_text, quote=False)
 
-            # Base color style by token type (same mapping as generate_html)
+            #! Colors:
             if token.type in range(PyDAXLexer.ABS, PyDAXLexer.KEEPFILTERS) or token.type in range(PyDAXLexer.LASTDATE, PyDAXLexer.REL):
                 color_style = f'color: {colors["function"]};'
             elif token.type in [PyDAXLexer.PLUS, PyDAXLexer.MINUS, PyDAXLexer.STAR, PyDAXLexer.DIV, PyDAXLexer.CARET, PyDAXLexer.OP_GE, PyDAXLexer.OP_AND, PyDAXLexer.OP_LE, PyDAXLexer.OP_NE, PyDAXLexer.OP_OR, PyDAXLexer.AND, PyDAXLexer.OR, PyDAXLexer.NOT, PyDAXLexer.COMMA]:
@@ -432,11 +423,11 @@ class DAXExpression:
             else:
                 color_style = f'color: {colors["text_color"]};'
 
-            # Add MS Word-like underline for violations and set tooltip with rule short names
+            # Add underline style and tooltip for violations
             title_attr = ''
             if is_violation:
-                # Force red text for visibility in environments that don't support colored/wavy underline
-                # Also add a plain underline as a broad fallback, then refine with wavy style where supported
+                # Force red text for visibility
+                # Also add a plain underline
                 color_style += (
                     ' color: #ff0000 !important;'
                     ' text-decoration: underline;'
@@ -451,7 +442,7 @@ class DAXExpression:
                 # Aggregate overlapping rule names for this token span
                 label_names: set[str] = set()
                 if isinstance(start, int) and isinstance(stop, int):
-                    for (s, e), names in violation_spans.items():
+                    for (s, e), names in violation_regions.items():
                         if not (e < start or s > stop):  # overlaps
                             label_names.update(names)
                 if label_names:
