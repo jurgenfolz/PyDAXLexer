@@ -54,3 +54,32 @@ class DAXFunctionReference(DAXReference):
 class DAXUnknownReference(DAXReference):
     def __init__(self, name: str, token: Token):
         super().__init__(name, token)
+        
+
+class DAXRelationshipReference:
+    def __init__(self, token_userelationship: Token, token_table1: Token, token_column1: Token, token_table2: Token, token_column2: Token):
+
+        self.token_userelationship: DAXToken = DAXToken(token_userelationship)
+        self.token_table1: DAXToken = DAXToken(token_table1)
+        self.token_column1: DAXToken = DAXToken(token_column1)
+        self.token_table2: DAXToken = DAXToken(token_table2)
+        self.token_column2: DAXToken = DAXToken(token_column2)
+
+        self.table1: str = token_table1.text
+        self.column1: str = token_column1.text
+        self.table2: str = token_table2.text
+        self.column2: str = token_column2.text
+        
+
+    def __str__(self):
+        return f"{self.table1}[{self.column1}] -> {self.table2}[{self.column2}]"
+
+
+    def __eq__(self, value):
+        if isinstance(value, DAXRelationshipReference):
+            return (self.token_userelationship == value.token_userelationship and self.token_table1 == value.token_table1 and
+                    self.token_column1 == value.token_column1 and self.token_table2 == value.token_table2 and self.token_column2 == value.token_column2)
+        return False
+    
+    def __hash__(self):
+        return hash((self.token_userelationship, self.token_table1, self.token_column1, self.token_table2, self.token_column2))
