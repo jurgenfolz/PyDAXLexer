@@ -31,6 +31,7 @@ class DAXExpression:
         self.table_references: list[DAXTableReference] = [] #register standalone table references
         self.variable_references: list[DAXVariableReference] = [] #register standalone variable references
         self.function_references: list[DAXFunctionReference] = [] #register standalone function references
+        self.relationship_references: list[DAXRelationshipReference] = [] #register standalone relationship references
         self.unknown_references: list[DAXUnknownReference] = [] #register unknown references, basically a fallback for the others
         
         self.extract_references() #Populkate references
@@ -299,6 +300,13 @@ class DAXExpression:
         n = len(tokens)
         while i < n:
             token: Token = tokens[i]
+            # Detect USERELATIONSHIP references first and record them
+            if token.type == PyDAXLexer.USERELATIONSHIP:
+                next_i = self._extract_relationships(tokens, i)
+                # If successfully parsed, continue from the token after ')'
+                if next_i > i:
+                    i = next_i
+                    continue
             # The good one: TABLE or TABLE_OR_VARIABLE followed by '(' then COLUMN_OR_MEASURE
             if token.type in (PyDAXLexer.TABLE, PyDAXLexer.TABLE_OR_VARIABLE):
                 table_name: str = token.text
@@ -365,6 +373,78 @@ class DAXExpression:
         
     
     # endregion #* DAX Expression Analysis Methods
+
+    def _extract_relationships(self, tokens: list[Token], start_idx: int) -> int:
+        """Scan tokens starting at USERELATIONSHIP and capture its two fully-qualified column arguments.
+
+        Returns the index of the token just after the closing ')' if successful; otherwise returns start_idx + 1.
+        """
+        i = start_idx
+        n = len(tokens)
+        # USERELATIONSHIP at i
+        if i >= n or tokens[i].type != PyDAXLexer.USERELATIONSHIP:
+            return i + 1
+
+        # Find next opening parenthesis
+        j = i + 1
+        while j < n and tokens[j].type != PyDAXLexer.OPEN_PARENS:
+            j += 1
+        if j >= n:
+            return i + 1
+
+        # Get the first argument: table and column
+        p = j + 1
+        if p >= n or tokens[p].type not in (PyDAXLexer.TABLE, PyDAXLexer.TABLE_OR_VARIABLE):
+            return i + 1
+        token_table1 = tokens[p]
+        p += 1
+        # tolerate for an opening parens - weird Lexer thing
+        if p < n and tokens[p].type == PyDAXLexer.OPEN_PARENS:
+            p += 1
+        if p >= n or tokens[p].type != PyDAXLexer.COLUMN_OR_MEASURE:
+            return i + 1
+        token_column1 = tokens[p]
+        p += 1
+
+        # then a comma separator
+        if p >= n or tokens[p].type != PyDAXLexer.COMMA:
+            return i + 1
+        p += 1
+
+        # Parse second argument: table 2 and column 2
+        if p >= n or tokens[p].type not in (PyDAXLexer.TABLE, PyDAXLexer.TABLE_OR_VARIABLE):
+            return i + 1
+        token_table2 = tokens[p]
+        p += 1
+        if p < n and tokens[p].type == PyDAXLexer.OPEN_PARENS:
+            p += 1
+        if p >= n or tokens[p].type != PyDAXLexer.COLUMN_OR_MEASURE:
+            return i + 1
+        token_column2 = tokens[p]
+        p += 1
+
+        # Get tokens until closing parenthesis
+        while p < n and tokens[p].type != PyDAXLexer.CLOSE_PARENS:
+            p += 1
+        if p >= n:
+            return i + 1
+
+        # Create object and register relationship reference
+        try:
+            self.relationship_references.append(
+                DAXRelationshipReference(
+                    token_userelationship=tokens[i],
+                    token_table1=token_table1,
+                    token_column1=token_column1,
+                    token_table2=token_table2,
+                    token_column2=token_column2,
+                )
+            )
+        except Exception:
+            # Be resilient and do not break extraction if something goes wrong
+            return p + 1
+
+        return p + 1
     
     # region #! DAX Expression HTML Generation Methods
     
