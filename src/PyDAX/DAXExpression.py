@@ -411,13 +411,17 @@ class DAXExpression:
             if token.type == PyDAXLexer.COLUMN_OR_MEASURE:
                 if not (display_text.startswith('[') and display_text.endswith(']')):
                     display_text = f'[{display_text}]'
+            # DAX uses double quotes for string literals; lexer may strip them
+            elif token.type == PyDAXLexer.STRING_LITERAL:
+                if not (display_text.startswith('"') and display_text.endswith('"')):
+                    display_text = f'"{display_text}"'
 
             safe_text = html.escape(display_text, quote=False)
             if token.type in range(PyDAXLexer.ABS, PyDAXLexer.KEEPFILTERS) or token.type in range(PyDAXLexer.LASTDATE, PyDAXLexer.REL):
                 html_output.append(f'<span style="color: {colors["function"]};">{safe_text}</span>')
             elif token.type in [PyDAXLexer.PLUS, PyDAXLexer.MINUS, PyDAXLexer.STAR, PyDAXLexer.DIV, PyDAXLexer.CARET, PyDAXLexer.OP_GE, PyDAXLexer.OP_AND, PyDAXLexer.OP_LE, PyDAXLexer.OP_NE, PyDAXLexer.OP_OR, PyDAXLexer.AND, PyDAXLexer.OR, PyDAXLexer.NOT, PyDAXLexer.COMMA]:
                 html_output.append(f'<span style="color: {colors["operator"]};">{safe_text}</span>')
-            elif token.type == PyDAXLexer.TABLE:
+            elif token.type in [PyDAXLexer.TABLE, PyDAXLexer.TABLE_OR_VARIABLE]:
                 html_output.append(f'<span style="color: {colors["table"]};">{safe_text}</span>')
             elif token.type == PyDAXLexer.COLUMN_OR_MEASURE:
                 html_output.append(f'<span style="color: {colors["column"]};">{safe_text}</span>')
@@ -527,6 +531,9 @@ class DAXExpression:
             if token.type == PyDAXLexer.COLUMN_OR_MEASURE:
                 if not (display_text.startswith('[') and display_text.endswith(']')):
                     display_text = f'[{display_text}]'
+            elif token.type == PyDAXLexer.STRING_LITERAL:
+                if not (display_text.startswith('"') and display_text.endswith('"')):
+                    display_text = f'"{display_text}"'
 
             safe_text = html.escape(display_text, quote=False)
 
@@ -535,7 +542,7 @@ class DAXExpression:
                 color_style = f'color: {colors["function"]};'
             elif token.type in [PyDAXLexer.PLUS, PyDAXLexer.MINUS, PyDAXLexer.STAR, PyDAXLexer.DIV, PyDAXLexer.CARET, PyDAXLexer.OP_GE, PyDAXLexer.OP_AND, PyDAXLexer.OP_LE, PyDAXLexer.OP_NE, PyDAXLexer.OP_OR, PyDAXLexer.AND, PyDAXLexer.OR, PyDAXLexer.NOT, PyDAXLexer.COMMA]:
                 color_style = f'color: {colors["operator"]};'
-            elif token.type == PyDAXLexer.TABLE:
+            elif token.type in [PyDAXLexer.TABLE, PyDAXLexer.TABLE_OR_VARIABLE]:
                 color_style = f'color: {colors["table"]};'
             elif token.type == PyDAXLexer.COLUMN_OR_MEASURE:
                 color_style = f'color: {colors["column"]};'
