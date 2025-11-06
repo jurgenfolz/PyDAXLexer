@@ -61,16 +61,35 @@ class DAXExpression:
     def __setstate__(self, state):
         #* This fucking thing here is used to handle unpickling of previous versions of the class
         verify_rules = False
-        
+        extract_references = False
         # Restore the attributes
         state["input_stream"] = InputStream(state["dax_expression"]) 
         state["lexer"] = PyDAXLexer(state["input_stream"])
+        
+        if 'variables' not in state:
+            state['variables'] = []
+        
+        if 'table_references' not in state:
+            state['table_references'] = []
+        
+        if 'variable_references' not in state:
+            state['variable_references'] = []
+        
+        if 'function_references' not in state:
+            state['function_references'] = []
+            
+        if 'relationship_references' not in state:
+            state['relationship_references'] = []
+            
+        if 'unknown_references' not in state:
+            state['unknown_references'] = []
+        
         
         #Handles the change from tuples to DAXrefrence objects
         if "table_column_references" in state:
             if isinstance(state["table_column_references"], list):
                 if all(isinstance(item, tuple) and len(item) == 2 for item in state["table_column_references"]):
-                    state["table_column_references"] = [DAXArtifactReference(table_name=t[0], artifact_name=t[1]) for t in state["table_column_references"]]
+                    extract_references = True
         
         if not 'best_practice_attributes_initialized' in state:
             state['best_practice_attributes_initialized'] = False
@@ -92,6 +111,9 @@ class DAXExpression:
         
         if verify_rules:
             self.verify_best_practices()
+            
+        if extract_references:
+            self.extract_references()
     
     @property
     def best_practice_rules(self) -> list[BestPracticeRule]:
