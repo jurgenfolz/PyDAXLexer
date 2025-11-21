@@ -89,6 +89,13 @@ class DAXExpression:
         if "table_column_references" in state:
             if isinstance(state["table_column_references"], list):
                 if all(isinstance(item, tuple) and len(item) == 2 for item in state["table_column_references"]):
+                    state["table_column_references"] = []
+                    state['variables'] = []
+                    state['table_references'] = []
+                    state['variable_references'] = []
+                    state['function_references'] = []
+                    state['relationship_references'] = []
+                    state['unknown_references'] = []
                     extract_references = True
         
         if not 'best_practice_attributes_initialized' in state:
