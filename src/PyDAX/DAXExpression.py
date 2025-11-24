@@ -85,18 +85,19 @@ class DAXExpression:
             state['unknown_references'] = []
         
         
-        #Handles the change from tuples to DAXrefrence objects
+        #Handles the change from tuples to DAXrefrence objects from past versions
         if "table_column_references" in state:
-            if isinstance(state["table_column_references"], list):
-                if all(isinstance(item, tuple) and len(item) == 2 for item in state["table_column_references"]):
-                    state["table_column_references"] = []
-                    state['variables'] = []
-                    state['table_references'] = []
-                    state['variable_references'] = []
-                    state['function_references'] = []
-                    state['relationship_references'] = []
-                    state['unknown_references'] = []
-                    extract_references = True
+            if isinstance(state["table_column_references"], list): #! Old version had a list of tuples, now a list of DAXArtifactReference objects
+                if len(state["table_column_references"]) > 0: #* only if there are items
+                    if all(isinstance(item, tuple) and len(item) == 2 for item in state["table_column_references"]):
+                        state["table_column_references"] = []
+                        state['variables'] = []
+                        state['table_references'] = []
+                        state['variable_references'] = []
+                        state['function_references'] = []
+                        state['relationship_references'] = []
+                        state['unknown_references'] = []
+                        extract_references = True
         
         if not 'best_practice_attributes_initialized' in state:
             state['best_practice_attributes_initialized'] = False
