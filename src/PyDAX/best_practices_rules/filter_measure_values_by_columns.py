@@ -19,7 +19,7 @@ rule_metadata = {
 
 
 class FilterMeasureValuesByColumns(BestPracticeRule):
-    def __init__(self, lexer: "PyDAXLexer") -> None:
+    def __init__(self) -> None:
         super().__init__(
             id=rule_metadata["ID"],
             name=rule_metadata["Name"],
@@ -27,7 +27,6 @@ class FilterMeasureValuesByColumns(BestPracticeRule):
             severity=str(rule_metadata["Severity"]),
             category=rule_metadata["Category"],
             short_name=rule_metadata["short_name"],
-            lexer=lexer,
         )
         self.patterns = [
             re.compile(
@@ -40,15 +39,14 @@ class FilterMeasureValuesByColumns(BestPracticeRule):
             ),
         ]
 
-    def verify_violation(self) -> None:
+    def verify_violation(self, lexer: "PyDAXLexer") -> None:
         self.clear_violations()
-        self.lexer.reset()
+        lexer.reset()
 
-        full_text = self.lexer.inputStream.strdata
-
+        full_text = lexer.inputStream.strdata
         # Make sure that the expression contains a CALCULATE or CALCULATETABLE outside of comments/strings
-        self.lexer.reset()
-        all_tokens: list[Token] = self.lexer.getAllTokens()
+        lexer.reset()
+        all_tokens: list[Token] = lexer.getAllTokens()
         keyword_tokens = [t for t in all_tokens if t.channel == PyDAXLexer.KEYWORD_CHANNEL]
         has_calculate = any(
             t.type in (PyDAXLexer.CALCULATE, PyDAXLexer.CALCULATETABLE) for t in keyword_tokens

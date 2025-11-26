@@ -4,14 +4,13 @@ from typing import Literal
 from ..DAXToken import DAXToken
 
 class BestPracticeRule:
-    def __init__(self, id: str, name: str, description: str, severity: str, category: str, short_name: str, lexer: PyDAXLexer) -> None:
+    def __init__(self, id: str, name: str, description: str, severity: str, category: str, short_name: str) -> None:
         self.id: str = id
         self.name: str = name
         self.description: str = description
         self.severity: str = severity
         self.category: str = category
         self.short_name: str = short_name
-        self.lexer: PyDAXLexer = lexer
 
         #Verification attr
         self.verified: bool = False
@@ -24,7 +23,6 @@ class BestPracticeRule:
     def __getstate__(self):
         state = self.__dict__.copy()
         # Handle attributes that can't be pickled
-        state["lexer"] = None
         return state
     
     @property

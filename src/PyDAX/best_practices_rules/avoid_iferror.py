@@ -15,7 +15,7 @@ rule_metadata = {
     }
 
 class AvoidIfError(BestPracticeRule):
-    def __init__(self, lexer: 'PyDAXLexer') -> None:
+    def __init__(self) -> None:
         # Initialize the base BestPracticeRule with metadata
         super().__init__(
             id=rule_metadata["ID"],
@@ -24,21 +24,20 @@ class AvoidIfError(BestPracticeRule):
             severity=rule_metadata["Severity"],
             category=rule_metadata["Category"],
             short_name=rule_metadata["short_name"],
-            lexer=lexer
         )
 
 
-    def verify_violation(self) -> None:
+    def verify_violation(self, lexer: "PyDAXLexer") -> None:
         # Check if the DAX expression contains the IFERROR function
         self.clear_violations()
-        self.lexer.reset()  # Reset the lexer to start from the beginning
-        token: Token = self.lexer.nextToken()
-
+        lexer.reset()  # Reset the lexer to start from the beginning
+        token: Token = lexer.nextToken()
+    
         while token.type != Token.EOF:
             if token.type == PyDAXLexer.IFERROR:
                 self.violators_tokens.append(DAXToken(token))
                 self.highlight_tokens.append(DAXToken(token))
                 
-            token = self.lexer.nextToken()
+            token = lexer.nextToken()
         
         self.verified = True

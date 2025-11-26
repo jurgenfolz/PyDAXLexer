@@ -17,7 +17,7 @@ rule_metadata = {
 
 
 class UseDivide(BestPracticeRule):
-    def __init__(self, lexer: 'PyDAXLexer') -> None:
+    def __init__(self) -> None:
         # Initialize the base BestPracticeRule with metadata
         super().__init__(
             id=rule_metadata["ID"],
@@ -25,23 +25,21 @@ class UseDivide(BestPracticeRule):
             description=rule_metadata["Description"],
             severity=rule_metadata["Severity"],
             category=rule_metadata["Category"],
-            short_name=rule_metadata["short_name"],
-            lexer=lexer
+            short_name=rule_metadata["short_name"]
         )
 
 
-    def verify_violation(self) -> None:
+    def verify_violation(self, lexer: "PyDAXLexer") -> None:
         # Check if the DAX expression contains the division operator
         self.clear_violations()
-        self.lexer.reset()  # Reset the lexer to start from the beginning
+        lexer.reset()  # Reset the lexer to start from the beginning
         # Collect default-channel tokens in order to identify numerator/denominator
         tokens: list[Token] = []
-        t: Token = self.lexer.nextToken()
+        t: Token = lexer.nextToken()
         while t.type != Token.EOF:
             if t.channel == Token.DEFAULT_CHANNEL:
                 tokens.append(t)
-            t = self.lexer.nextToken()
-
+            t = lexer.nextToken()
 
         for i, tok in enumerate(tokens):
             if tok.type == PyDAXLexer.DIV:

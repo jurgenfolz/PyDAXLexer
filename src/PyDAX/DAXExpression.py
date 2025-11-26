@@ -15,10 +15,11 @@ class DAXExpression:
         
         dax_expression = "" if not isinstance(dax_expression, str) else dax_expression
         self.dax_expression: str = dax_expression
-        self.input_stream: InputStream = InputStream(dax_expression)
         
-        self.lexer: PyDAXLexer = PyDAXLexer(self.input_stream)
-        self.lexer.removeErrorListeners()
+        #Lazy initialization of lexer and input stream
+        self._input_stream: InputStream = InputStream(dax_expression)
+        self._lexer: PyDAXLexer = PyDAXLexer(self._input_stream)
+        self._lexer.removeErrorListeners()
         
         self.dax_expression_no_comments: str = self.remove_comments()
         
@@ -53,8 +54,8 @@ class DAXExpression:
     def __getstate__(self):
         state = self.__dict__.copy()
         # Handle attributes that can't be pickled
-        state["input_stream"] = None 
-        state["lexer"] = None
+        state["_input_stream"] = None 
+        state["_lexer"] = None
         
         return state
 
@@ -62,9 +63,12 @@ class DAXExpression:
         #* This fucking thing here is used to handle unpickling of previous versions of the class
         verify_rules = False
         extract_references = False
-        # Restore the attributes
-        state["input_stream"] = InputStream(state["dax_expression"]) 
-        state["lexer"] = PyDAXLexer(state["input_stream"])
+        
+        if not "_input_stream" in state:
+            state["_input_stream"] = None
+        
+        if not "_lexer" in state:
+            state["_lexer"] = None
         
         if 'variables' not in state:
             state['variables'] = []
@@ -101,22 +105,19 @@ class DAXExpression:
         
         if not 'best_practice_attributes_initialized' in state:
             state['best_practice_attributes_initialized'] = False
-            state['use_divide_function_for_division'] = UseDivide(lexer=state["lexer"])
-            state['avoid_using_iferror_function'] = AvoidIfError(lexer=state["lexer"])
-            state['use_the_treatas_function_instead_of_intersect'] = UseTreatasInsteadOfIntersect(lexer=state["lexer"])
-            state['filter_column_values'] = FilterColumnValues(lexer=state["lexer"])
-            state['filter_measure_values_by_columns'] = FilterMeasureValuesByColumns(lexer=state["lexer"])
-            state['unused_variables'] = UnusedVariables(lexer=state["lexer"])
-            state['avoid_using_1_x_y_syntax'] = AvoidOneMinusDivision(lexer=state["lexer"])
-            state['evaluateandlog_should_not_be_used_in_production_models'] = EvaluateAndLogShouldNotBeUsedInProductionModels(lexer=state["lexer"])
+            state['use_divide_function_for_division'] = UseDivide()
+            state['avoid_using_iferror_function'] = AvoidIfError()
+            state['use_the_treatas_function_instead_of_intersect'] = UseTreatasInsteadOfIntersect()
+            state['filter_column_values'] = FilterColumnValues()
+            state['filter_measure_values_by_columns'] = FilterMeasureValuesByColumns()
+            state['unused_variables'] = UnusedVariables()
+            state['avoid_using_1_x_y_syntax'] = AvoidOneMinusDivision()
+            state['evaluateandlog_should_not_be_used_in_production_models'] = EvaluateAndLogShouldNotBeUsedInProductionModels()
             verify_rules = True
         
         
         self.__dict__.update(state)
-        
-        for rule in self.best_practice_rules:
-            rule.lexer = self.lexer
-        
+                
         if verify_rules:
             self.verify_best_practices()
             
@@ -157,24 +158,37 @@ class DAXExpression:
         
         return violations
     
+    @property
+    def input_stream(self) -> InputStream:
+        if not isinstance(self._input_stream, InputStream):
+            self._input_stream = InputStream(self.dax_expression)
+        return self._input_stream
+
+    @property
+    def lexer(self) -> PyDAXLexer:
+        if not isinstance(self._lexer, PyDAXLexer):
+            self._lexer = PyDAXLexer(self.input_stream)
+            self._lexer.removeErrorListeners()
+        return self._lexer
     
     
     # region #? Best Practices Rules
     
     def init_best_practices_rules(self) -> None:
         """Initializes best practice rules for the DAX expression"""
-        self.use_divide_function_for_division: UseDivide = UseDivide(lexer=self.lexer)
-        self.avoid_using_iferror_function: AvoidIfError = AvoidIfError(lexer=self.lexer)
-        self.use_the_treatas_function_instead_of_intersect: UseTreatasInsteadOfIntersect = UseTreatasInsteadOfIntersect(lexer=self.lexer)
-        self.filter_column_values: FilterColumnValues = FilterColumnValues(lexer=self.lexer)
-        self.filter_measure_values_by_columns: FilterMeasureValuesByColumns = FilterMeasureValuesByColumns(lexer=self.lexer)
-        self.unused_variables: UnusedVariables = UnusedVariables(lexer=self.lexer)
-        self.avoid_using_1_x_y_syntax: AvoidOneMinusDivision = AvoidOneMinusDivision(lexer=self.lexer)
-        self.evaluateandlog_should_not_be_used_in_production_models: EvaluateAndLogShouldNotBeUsedInProductionModels = EvaluateAndLogShouldNotBeUsedInProductionModels(lexer=self.lexer)
+        self.use_divide_function_for_division: UseDivide = UseDivide()
+        self.avoid_using_iferror_function: AvoidIfError = AvoidIfError()
+        self.use_the_treatas_function_instead_of_intersect: UseTreatasInsteadOfIntersect = UseTreatasInsteadOfIntersect()
+        self.filter_column_values: FilterColumnValues = FilterColumnValues()
+        self.filter_measure_values_by_columns: FilterMeasureValuesByColumns = FilterMeasureValuesByColumns()
+        self.unused_variables: UnusedVariables = UnusedVariables()
+        self.avoid_using_1_x_y_syntax: AvoidOneMinusDivision = AvoidOneMinusDivision()
+        self.evaluateandlog_should_not_be_used_in_production_models: EvaluateAndLogShouldNotBeUsedInProductionModels = EvaluateAndLogShouldNotBeUsedInProductionModels()
+        self.best_practice_attributes_initialized = True
         
     def verify_best_practices(self) -> None:
         for rule in self.best_practice_rules:
-            rule.verify_violation()
+            rule.verify_violation(lexer=self.lexer)
     
     def print_best_practices_violations(self) -> None:
         """Prints violations of best practice rules"""

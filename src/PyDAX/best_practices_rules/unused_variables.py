@@ -14,27 +14,26 @@ rule_metadata = {
 
 
 class UnusedVariables(BestPracticeRule):
-    def __init__(self, lexer: "PyDAXLexer") -> None:
+    def __init__(self) -> None:
         super().__init__(
             id=rule_metadata["ID"],
             name=rule_metadata["Name"],
             description=rule_metadata["Description"],
             severity=str(rule_metadata["Severity"]),
             category=rule_metadata["Category"],
-            short_name=rule_metadata["short_name"],
-            lexer=lexer,
+            short_name=rule_metadata["short_name"]
         )
 
-    def verify_violation(self) -> None:
+    def verify_violation(self, lexer: "PyDAXLexer") -> None:
         self.clear_violations()
-        self.lexer.reset()
+        lexer.reset()
 
         tokens: list[Token] = []
-        t: Token = self.lexer.nextToken()
+        t: Token = lexer.nextToken()
         while t.type != Token.EOF:
             if t.channel == Token.DEFAULT_CHANNEL or t.type == PyDAXLexer.VAR:
                 tokens.append(t)
-            t = self.lexer.nextToken()
+            t = lexer.nextToken()
 
         IDENT_LIKE = {
             PyDAXLexer.TABLE_OR_VARIABLE,

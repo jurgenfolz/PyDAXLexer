@@ -17,26 +17,25 @@ rule_metadata = {
 
 
 class AvoidOneMinusDivision(BestPracticeRule):
-    def __init__(self, lexer: "PyDAXLexer") -> None:
+    def __init__(self) -> None:
         super().__init__(
             id=rule_metadata["ID"],
             name=rule_metadata["Name"],
             description=rule_metadata["Description"],
             severity=str(rule_metadata["Severity"]),
             category=rule_metadata["Category"],
-            short_name=rule_metadata["short_name"],
-            lexer=lexer,
+            short_name=rule_metadata["short_name"]
         )
 
-    def verify_violation(self) -> None:
+    def verify_violation(self, lexer: "PyDAXLexer") -> None:
         self.clear_violations()
-        self.lexer.reset()
+        lexer.reset()
         window: list[Token] = []
-        token: Token = self.lexer.nextToken()
+        token: Token = lexer.nextToken()
         while token.type != Token.EOF:
             if token.channel == Token.DEFAULT_CHANNEL:
                 window.append(token)
-            token = self.lexer.nextToken()
+            token = lexer.nextToken()
         for i, t in enumerate(window):
             # Numeric literals are tokenized as INTEGER_LITERAL or REAL_LITERAL
             if t.type in (PyDAXLexer.INTEGER_LITERAL, PyDAXLexer.REAL_LITERAL):

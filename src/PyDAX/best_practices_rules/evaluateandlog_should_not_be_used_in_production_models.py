@@ -16,24 +16,23 @@ rule_metadata = {
 
 
 class EvaluateAndLogShouldNotBeUsedInProductionModels(BestPracticeRule):
-    def __init__(self, lexer: "PyDAXLexer") -> None:
+    def __init__(self) -> None:
         super().__init__(
             id=rule_metadata["ID"],
             name=rule_metadata["Name"],
             description=rule_metadata["Description"],
             severity=str(rule_metadata["Severity"]),
             category=rule_metadata["Category"],
-            short_name=rule_metadata["short_name"],
-            lexer=lexer,
+            short_name=rule_metadata["short_name"]
         )
 
-    def verify_violation(self) -> None:
+    def verify_violation(self, lexer: "PyDAXLexer") -> None:
         self.clear_violations()
-        self.lexer.reset()
-        token: Token = self.lexer.nextToken()
+        lexer.reset()
+        token: Token = lexer.nextToken()
         while token.type != Token.EOF:
             if token.type == PyDAXLexer.EVALUATEANDLOG:
                 self.violators_tokens.append(DAXToken(token))
                 self.highlight_tokens.append(DAXToken(token))
-            token = self.lexer.nextToken()
+            token = lexer.nextToken()
         self.verified = True

@@ -19,31 +19,30 @@ rule_metadata = {
 
 
 class FilterColumnValues(BestPracticeRule):
-    def __init__(self, lexer: "PyDAXLexer") -> None:
+    def __init__(self) -> None:
         super().__init__(
             id=rule_metadata["ID"],
             name=rule_metadata["Name"],
             description=rule_metadata["Description"],
             severity=str(rule_metadata["Severity"]),
             category=rule_metadata["Category"],
-            short_name=rule_metadata["short_name"],
-            lexer=lexer,
+            short_name=rule_metadata["short_name"]
         )
         self.patterns = [
             re.compile(r"CALCULATE\s*\(\s*[^,]+,\s*FILTER\s*\(\s*'?[A-Za-z0-9 _]+'?\s*,\s*'?[A-Za-z0-9 _]+'?\[[A-Za-z0-9 _]+\]", re.IGNORECASE),
             re.compile(r"CALCULATETABLE\s*\([^,]*,\s*FILTER\s*\(\s*'?[A-Za-z0-9 _]+'?,\s*'?[A-Za-z0-9 _]+'?\[[A-Za-z0-9 _]+\]", re.IGNORECASE),
         ]
 
-    def verify_violation(self) -> None:
+    def verify_violation(self, lexer: "PyDAXLexer") -> None:
         self.clear_violations()
-        self.lexer.reset()
+        lexer.reset()
 
-        full_text = self.lexer.inputStream.strdata
+        full_text = lexer.inputStream.strdata
 
         # Token-based guard: require a real CALCULATE/CALCULATETABLE token on the keyword channel
         # (ignores commented occurrences). Also prepare tokens for span expansion.
-        self.lexer.reset()
-        all_tokens: list[Token] = self.lexer.getAllTokens()
+        lexer.reset()
+        all_tokens: list[Token] = lexer.getAllTokens()
         # Tokens on the keyword channel (functions like CALCULATE, FILTER)
         keyword_tokens: list[Token] = [t for t in all_tokens if t.channel == PyDAXLexer.KEYWORD_CHANNEL]
         # Tokens we can use to expand highlight spans (default + keyword channels)
