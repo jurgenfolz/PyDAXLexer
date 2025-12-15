@@ -530,7 +530,7 @@ class DAXExpression:
         token: Token = self.lexer.nextToken()
         while token.type != Token.EOF:
             # Prepare display text and escape only HTML control chars
-            display_text = token.text
+            display_text = self._get_original_token_text(token)
             # DAX shows measures/columns in brackets
             if token.type == PyDAXLexer.COLUMN_OR_MEASURE:
                 if not (display_text.startswith('[') and display_text.endswith(']')):
@@ -651,7 +651,7 @@ class DAXExpression:
                 is_violation = False
 
             # Prepare text and escape HTML control chars (<, >, &)
-            display_text = token.text
+            display_text = self._get_original_token_text(token)
             if token.type == PyDAXLexer.COLUMN_OR_MEASURE:
                 if not (display_text.startswith('[') and display_text.endswith(']')):
                     display_text = f'[{display_text}]'
@@ -722,6 +722,30 @@ class DAXExpression:
     # endregion #! DAX Expression HTML Generation Methods
 
     # region #? Helper Methods
+
+    def _get_original_token_text(self, token: Token) -> str:
+        """Return the exact lexeme slice from the original expression when possible."""
+        expr = self.dax_expression or ""
+        fallback = getattr(token, 'text', '') or ""
+        if not expr:
+            return fallback
+
+        try:
+            start = getattr(token, 'start', None)
+            stop = getattr(token, 'stop', None)
+            if isinstance(start, int) and isinstance(stop, int):
+                if stop < start:
+                    start, stop = stop, start
+                if start >= len(expr) or stop < 0:
+                    return fallback
+                start = max(0, start)
+                stop = min(len(expr) - 1, stop)
+                if start <= stop:
+                    return expr[start:stop + 1]
+        except Exception:
+            return fallback
+
+        return fallback
     
     @staticmethod
     def _clean_name(text: str) -> str:
