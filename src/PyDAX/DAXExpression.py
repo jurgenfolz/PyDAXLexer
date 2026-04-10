@@ -706,7 +706,10 @@ class DAXExpression:
                     names_text_safe = html.escape(names_text, quote=False)
                     title_attr = f' title="{names_text_safe}"'
 
-            html_output.append(f'<span style="{color_style}"{title_attr}>{safe_text}</span>')
+            if title_attr:
+                html_output.append(f'<a href="#" style="{color_style} text-decoration: none;"{title_attr}>{safe_text}</a>')
+            else:
+                html_output.append(f'<span style="{color_style}">{safe_text}</span>')
             token = self.lexer.nextToken()
 
         html_output.append('</pre>')
