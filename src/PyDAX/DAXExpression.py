@@ -171,6 +171,33 @@ class DAXExpression:
             self._lexer.removeErrorListeners()
         return self._lexer
     
+    @property
+    def dark_mode(self) -> dict[str, str]:
+        return {
+            'background': '#202124',
+            'text_color': '#D4D4D4',
+            'function': '#B469FF',
+            'operator': '#D4D4D4',
+            'table': '#1E90FF',
+            'column': '#4EC9B0',
+            'number': '#B5CEA8',
+            'comment': '#6A9955',
+            'string': '#D69D85',
+        }
+        
+    @property
+    def light_mode(self) -> dict[str, str]:
+        {
+            'background': '#f8f9fa',
+            'text_color': '#000000',
+            'function': '#7959C1',
+            'operator': '#333333',
+            'table': '#0063B1',
+            'column': '#00796B',
+            'number': '#008000',
+            'comment': '#008000',
+            'string': '#D9534F',
+        }
     
     # region #? Best Practices Rules
     
@@ -495,32 +522,9 @@ class DAXExpression:
     def generate_html(self, name: str = "", light: bool = True) -> str:
         """Generates an HTML string with colorized DAX elements in light or dark mode"""
         # Define colors for both modes
-        dark_mode = {
-            'background': '#333',
-            'text_color': '#D4D4D4',
-            'function': '#B469FF',
-            'operator': '#D4D4D4',
-            'table': '#1E90FF',
-            'column': '#4EC9B0',
-            'number': '#B5CEA8',
-            'comment': '#6A9955',
-            'string': '#D69D85',
-        }
-        
-        light_mode = {
-            'background': '#FFFFFF',
-            'text_color': '#000000',
-            'function': '#7959C1',
-            'operator': '#333333',
-            'table': '#0063B1',
-            'column': '#00796B',
-            'number': '#008000',
-            'comment': '#008000',
-            'string': '#D9534F',
-        }
         
         # Choose the color set based on the mode
-        colors = dark_mode if not light else light_mode
+        colors = self.dark_mode if not light else self.light_mode
         
         # HTML template
         prefix = f"{name} = " if name else ""
@@ -572,32 +576,7 @@ class DAXExpression:
     def generate_html_with_violations(self, name: str = "", light: bool = True) -> str:
         """Generates HTML like generate_html, but highlights best-practice violations.
         """
-        #! colors for both modes
-        dark_mode = {
-            'background': '#333',
-            'text_color': '#D4D4D4',
-            'function': '#B469FF',
-            'operator': '#D4D4D4',
-            'table': '#1E90FF',
-            'column': '#4EC9B0',
-            'number': '#B5CEA8',
-            'comment': '#6A9955',
-            'string': '#D69D85',
-        }
-
-        light_mode = {
-            'background': '#FFFFFF',
-            'text_color': '#000000',
-            'function': '#7959C1',
-            'operator': '#333333',
-            'table': '#0063B1',
-            'column': '#00796B',
-            'number': '#008000',
-            'comment': '#008000',
-            'string': '#D9534F',
-        }
-
-        colors = dark_mode if not light else light_mode
+        colors = self.dark_mode if not light else self.light_mode
 
         # Build a mask of characters that belong to any violation region and map regions to rule names
         expr_text = self.dax_expression or ""
