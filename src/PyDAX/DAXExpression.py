@@ -187,7 +187,7 @@ class DAXExpression:
         
     @property
     def light_mode(self) -> dict[str, str]:
-        {
+        return {
             'background': '#f8f9fa',
             'text_color': '#000000',
             'function': '#7959C1',
