@@ -174,7 +174,6 @@ class DAXExpression:
     @property
     def dark_mode(self) -> dict[str, str]:
         return {
-            'background': '#202124',
             'text_color': '#D4D4D4',
             'function': '#B469FF',
             'operator': '#D4D4D4',
@@ -188,7 +187,6 @@ class DAXExpression:
     @property
     def light_mode(self) -> dict[str, str]:
         return {
-            'background': '#f8f9fa',
             'text_color': '#000000',
             'function': '#7959C1',
             'operator': '#333333',
@@ -528,7 +526,8 @@ class DAXExpression:
         
         # HTML template
         prefix = f"{name} = " if name else ""
-        html_output = [f'<pre style="font-family: Consolas, monospace; background-color: {colors["background"]}; color: {colors["text_color"]}; padding: 10px;">{prefix}']
+        #* No background: the block shows the background of the widget or page that displays it.
+        html_output = [f'<pre style="font-family: Consolas, monospace; color: {colors["text_color"]}; padding: 10px;">{prefix}']
         
         self.lexer.reset()
         token: Token = self.lexer.nextToken()
@@ -613,7 +612,8 @@ class DAXExpression:
                     continue
 
         prefix = f"{name} = " if name else ""
-        html_output = [f'<pre style="font-family: Consolas, monospace; background-color: {colors["background"]}; color: {colors["text_color"]}; padding: 10px;">{prefix}']
+        #* No background: the block shows the background of the widget or page that displays it.
+        html_output = [f'<pre style="font-family: Consolas, monospace; color: {colors["text_color"]}; padding: 10px;">{prefix}']
 
         self.lexer.reset()
         token: Token = self.lexer.nextToken()

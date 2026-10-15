@@ -7,7 +7,7 @@ if __name__ == '__main__':
     # FILTER on table+column inside CALCULATE
     # FILTER on table with measure predicate inside CALCULATE
     dax_expression = """
-    UDF_model_extension_dependencies()
+    UDF_model_extension_dependencies(fact[columnA])
     """
 
     # Initialize the analyzer
@@ -21,5 +21,8 @@ if __name__ == '__main__':
     
     for function_ref in expression.function_references:
         print(f"Function Reference: {function_ref.name}")
+    
+    for column_ref in expression.table_column_references:
+        print(f"Column Reference: {column_ref.table_name} [{column_ref.artifact_name}]")
 
 
